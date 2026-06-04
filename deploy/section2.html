@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>同行布局更新 | 检不断 理不乱</title>
+    <style>
+        :root {
+            --sidebar-bg: #4b5563;
+            --sidebar-hover: #6b7280;
+            --sidebar-active: #f97316;
+            --sidebar-text: #d1d5db;
+            --sidebar-text-active: #ffffff;
+            --bg-gradient-start: #fff7ed;
+            --bg-gradient-end: #ffffff;
+            --primary: #f97316;
+            --primary-light: #fff7ed;
+            --primary-dark: #c2410c;
+            --card: #ffffff;
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --text-light: #9ca3af;
+            --border: #f3f4f6;
+            --accent-teal: #0d9488;
+            --accent-teal-light: #ccfbf1;
+            --accent-red: #dc2626;
+            --accent-red-light: #fef2f2;
+            --accent-amber: #d97706;
+            --accent-amber-light: #fef3c7;
+            --accent-violet: #7c3aed;
+            --accent-violet-light: #ede9fe;
+            --accent-emerald: #059669;
+            --accent-emerald-light: #d1fae5;
+            --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-card: 0 4px 16px rgba(0,0,0,0.08);
+            --shadow-hover: 0 8px 30px rgba(0,0,0,0.12);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(180deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ========== Sidebar ========== */
+        .sidebar {
+            width: 220px;
+            min-height: 100vh;
+            background: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            left: 0; top: 0; bottom: 0;
+            z-index: 100;
+        }
+        .sidebar-logo { padding: 28px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .sidebar-logo .logo-text { font-size: 20px; font-weight: 700; color: var(--sidebar-text-active); letter-spacing: 1px; }
+        .sidebar-logo .logo-sub { font-size: 11px; color: var(--sidebar-text); margin-top: 4px; opacity: 0.7; }
+        .sidebar-nav { flex: 1; padding: 16px 12px; }
+        .nav-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+            border-radius: var(--radius-sm); color: var(--sidebar-text); text-decoration: none;
+            font-size: 14px; font-weight: 500; transition: all 0.25s ease; margin-bottom: 4px;
+        }
+        .nav-item:hover { background: var(--sidebar-hover); color: var(--sidebar-text-active); }
+        .nav-item.active { background: var(--sidebar-active); color: var(--sidebar-text-active); box-shadow: 0 2px 8px rgba(249,115,22,0.3); }
+        .nav-icon { width: 20px; text-align: center; font-size: 16px; }
+        .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 11px; color: var(--sidebar-text); opacity: 0.5; }
+
+        /* ========== Main ========== */
+        .main { flex: 1; margin-left: 220px; min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* Page Header */
+        .page-header {
+            background: var(--card);
+            padding: 24px 32px 20px;
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+        .page-header h1 {
+            font-size: 22px; font-weight: 700;
+            background: linear-gradient(135deg, #ea580c, #f97316, #f472b6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        @supports not (-webkit-background-clip: text) {
+            .page-header h1 { background: none; -webkit-text-fill-color: initial; color: var(--primary); }
+        }
+        .page-header .subtitle { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+
+        /* Container */
+        .container { max-width: 1200px; margin: 0 auto; padding: 24px; width: 100%; }
+
+        /* Section Tabs */
+        .section-tabs { display: flex; gap: 0; margin-bottom: 20px; background: var(--card); border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow-card); }
+        .section-tab { flex: 1; padding: 14px 16px; text-align: center; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; background: transparent; color: var(--text-secondary); border-bottom: 3px solid transparent; }
+        .section-tab:hover { background: #f8fafc; }
+        .section-tab.active { border-bottom-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+        .section-tab .tab-icon { display: block; font-size: 20px; margin-bottom: 4px; }
+        .section-tab .tab-label { display: block; font-size: 13px; }
+        .section-tab .tab-count { font-size: 11px; color: var(--text-secondary); }
+
+        /* Info Box */
+        .info-box { background: var(--primary-light); border-left: 4px solid var(--primary); padding: 14px 18px; border-radius: 0 10px 10px 0; font-size: 13px; color: var(--primary-dark); margin-bottom: 20px; }
+        .info-box strong { display: block; margin-bottom: 4px; }
+
+        /* Card Grid */
+        .card-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        @media (min-width: 768px) { .card-grid { grid-template-columns: repeat(2, 1fr); } }
+
+        /* Data Card */
+        .data-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow-card); overflow: hidden; transition: all 0.2s; border-left: 4px solid var(--border); }
+        .data-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+        .data-card-header { padding: 14px 18px 10px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); }
+        .company-tag { display: inline-block; padding: 3px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; color: white; white-space: nowrap; }
+        .card-title { font-size: 14px; font-weight: 600; flex: 1; line-height: 1.4; }
+        .card-date { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+        .data-card-body { padding: 12px 18px 14px; }
+        .focus-label { display: inline-block; font-size: 11px; font-weight: 600; color: var(--accent-amber); background: var(--accent-amber-light); padding: 2px 8px; border-radius: 6px; margin-bottom: 6px; }
+        .focus-text { font-size: 13px; color: var(--text); line-height: 1.7; }
+        .card-source { font-size: 11px; color: var(--text-secondary); margin-top: 8px; }
+
+        /* Category Colors */
+        .card-platform { border-left-color: var(--primary); }
+        .card-academic { border-left-color: var(--accent-violet); }
+        .card-business { border-left-color: var(--accent-emerald); }
+
+        .section-platform .focus-label { color: var(--primary); background: var(--primary-light); }
+        .section-academic .focus-label { color: var(--accent-violet); background: var(--accent-violet-light); }
+        .section-business .focus-label { color: var(--accent-emerald); background: var(--accent-emerald-light); }
+
+        /* Filter Bar */
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+        .filter-group { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+        .filter-label { font-size: 12px; color: var(--text-secondary); font-weight: 500; margin-right: 4px; }
+        .filter-btn { padding: 5px 14px; border: 1px solid var(--border); border-radius: 20px; font-size: 12px; cursor: pointer; background: var(--card); transition: all 0.15s; color: var(--text-secondary); }
+        .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .filter-btn:hover:not(.active) { border-color: var(--primary); color: var(--primary); }
+
+        /* Footer */
+        .page-footer { text-align: center; padding: 24px; color: var(--text-light); font-size: 11px; border-top: 1px solid var(--border); margin-top: auto; }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .sidebar { width: 60px; }
+            .sidebar-logo .logo-text, .sidebar-logo .logo-sub { display: none; }
+            .nav-item span:not(.nav-icon) { display: none; }
+            .nav-item { justify-content: center; padding: 12px; }
+            .sidebar-footer { display: none; }
+            .main { margin-left: 60px; }
+            .page-header h1 { font-size: 18px; }
+            .section-tab { padding: 10px 8px; }
+            .section-tab .tab-icon { font-size: 16px; }
+            .section-tab .tab-label { font-size: 11px; }
+            .data-card-header { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== Sidebar ===== -->
+    <nav class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-text">检不断 理不乱</div>
+            <div class="logo-sub">血液病医检竞品知识库</div>
+        </div>
+        <div class="sidebar-nav">
+            <a href="index.html" class="nav-item">
+                <span class="nav-icon">&#x1F3E0;</span>
+                <span>首页</span>
+            </a>
+            <a href="section1.html" class="nav-item">
+                <span class="nav-icon">&#x1F9EA;</span>
+                <span>新项目开展</span>
+            </a>
+            <a href="section2.html" class="nav-item active">
+                <span class="nav-icon">&#x1F3E2;</span>
+                <span>学术活动动态</span>
+            </a>
+            <a href="section3.html" class="nav-item">
+                <span class="nav-icon">&#x1F4CA;</span>
+                <span>行业风向标</span>
+            </a>
+        </div>
+        <div class="sidebar-footer">
+            v2.2 &middot; 金域医学广州市场部
+        </div>
+    </nav>
+
+    <!-- ===== Main Content ===== -->
+    <div class="main">
+        <div class="page-header">
+            <h1>同行布局更新</h1>
+            <div class="subtitle">追踪6家竞品战略合作、学术活动、平台建设动态 | 洞察战略方向与重点布局（2025年至今）</div>
+        </div>
+
+    <div class="container">
+        <!-- Section Tabs -->
+        <div class="section-tabs">
+            <button class="section-tab active" onclick="switchSection('platform')" id="tab-platform">
+                <span class="tab-icon">&#x1F3E2;</span>
+                <span class="tab-label">平台动向</span>
+                <span class="tab-count">5条</span>
+            </button>
+            <button class="section-tab" onclick="switchSection('academic')" id="tab-academic">
+                <span class="tab-icon">&#x1F393;</span>
+                <span class="tab-label">学术活动</span>
+                <span class="tab-count">5条</span>
+            </button>
+            <button class="section-tab" onclick="switchSection('business')" id="tab-business">
+                <span class="tab-icon">&#x1F91D;</span>
+                <span class="tab-label">商业及业务合作</span>
+                <span class="tab-count">5条</span>
+            </button>
+        </div>
+
+        <!-- Platform Section -->
+        <div id="section-platform">
+            <div class="info-box">
+                <strong>平台动向 <span style="font-weight:400;font-size:12px;">（共5条）</span></strong>
+                追踪竞品实验室建设、学科升级、区域中心布局、技术平台搭建等动态，洞察竞品在血液病检测领域的平台能力建设方向。
+            </div>
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <span class="filter-label">公司:</span>
+                    <button class="filter-btn active" data-section="platform" data-value="all">全部</button>
+                    <button class="filter-btn" data-section="platform" data-value="金域医学">金域医学</button>
+                    <button class="filter-btn" data-section="platform" data-value="康圣环球">康圣环球</button>
+                    <button class="filter-btn" data-section="platform" data-value="迪安诊断">迪安诊断</button>
+                    <button class="filter-btn" data-section="platform" data-value="协和博精">协和博精</button>
+                    <button class="filter-btn" data-section="platform" data-value="荻硕贝肯">荻硕贝肯</button>
+                </div>
+            </div>
+            <div class="card-grid" id="grid-platform"></div>
+        </div>
+
+        <!-- Academic Section -->
+        <div id="section-academic" style="display:none;">
+            <div class="info-box">
+                <strong>学术活动 <span style="font-weight:400;font-size:12px;">（共5条）</span></strong>
+                追踪竞品主办/参与学术会议、指南培训、病例讨论、学术报告等，洞察竞品学术影响力建设与专家资源布局。
+            </div>
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <span class="filter-label">公司:</span>
+                    <button class="filter-btn active" data-section="academic" data-value="all">全部</button>
+                    <button class="filter-btn" data-section="academic" data-value="金域医学">金域医学</button>
+                    <button class="filter-btn" data-section="academic" data-value="康圣环球">康圣环球</button>
+                    <button class="filter-btn" data-section="academic" data-value="迪安诊断">迪安诊断</button>
+                    <button class="filter-btn" data-section="academic" data-value="协和博精">协和博精</button>
+                    <button class="filter-btn" data-section="academic" data-value="荻硕贝肯">荻硕贝肯</button>
+                </div>
+            </div>
+            <div class="card-grid" id="grid-academic"></div>
+        </div>
+
+        <!-- Business Section -->
+        <div id="section-business" style="display:none;">
+            <div class="info-box">
+                <strong>商业及业务合作 <span style="font-weight:400;font-size:12px;">（共5条）</span></strong>
+                追踪竞品战略合作签约、联合实验室共建、业务联盟、渠道拓展等商业布局，洞察竞品的市场拓展策略与重点合作对象。
+            </div>
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <span class="filter-label">公司:</span>
+                    <button class="filter-btn active" data-section="business" data-value="all">全部</button>
+                    <button class="filter-btn" data-section="business" data-value="金域医学">金域医学</button>
+                    <button class="filter-btn" data-section="business" data-value="康圣环球">康圣环球</button>
+                    <button class="filter-btn" data-section="business" data-value="迪安诊断">迪安诊断</button>
+                    <button class="filter-btn" data-section="business" data-value="协和博精">协和博精</button>
+                    <button class="filter-btn" data-section="business" data-value="荻硕贝肯">荻硕贝肯</button>
+                </div>
+            </div>
+            <div class="card-grid" id="grid-business"></div>
+        </div>
+    </div>
+
+    <div class="page-footer">
+        检不断 理不乱 v2.2 &middot; 同行布局更新 | 数据来源：微信搜狗搜索 + 网页新闻 + 人工+AI补全
+    </div>
+    </div><!-- end .main -->
+
+    <script>
+    // ==================== 数据 ====================
+
+    const companyColors = {
+        '金域医学': '#1a56db',
+        '康圣环球': '#0d9488',
+        '迪安诊断': '#dc2626',
+        '协和博精': '#7c3aed',
+        '荻硕贝肯': '#059669',
+    };
+
+    // === 平台动向 ===
+    const platformData = [
+        {
+            company: '金域医学',
+            title: '广医二院-广州金域血液细胞学检测转化平台正式启用',
+            date: '2025-04-21',
+            focus: '广州医科大学附属第二医院与金域医学共建"血液细胞学检测转化平台"揭牌，双方在血液病诊断技术创新、成果转化、人才培养、临床研究等方面深入合作，构建高水平血液病实验室诊断区域中心，推动医院血液学科高质量发展。',
+            source: '金域医学官网 / 广医二院'
+        },
+        {
+            company: '金域医学',
+            title: '金域医学携手北大人民医院打造血液病精准诊疗新平台',
+            date: '2024-12-20',
+            focus: '金域医学与北京大学人民医院联合实验室揭牌成立，双方充分整合优势资源，攻坚血液病诊疗难题，合力研发创新技术，加速优质科研成果落地转化，推动血液病精准诊疗水平提升。金域可提供800余项血液检测项目。',
+            source: '金域医学官网 / 搜狐新闻'
+        },
+        {
+            company: '康圣环球',
+            title: '新疆维吾尔自治区血液病精准诊断中心揭牌启动',
+            date: '2026-05-21',
+            focus: '康圣环球携手新疆维吾尔自治区人民医院共建"新疆血液病精准诊断中心"及联合实验室，在乌鲁木齐正式揭牌。这是康圣环球全国化服务网络向西北边疆深耕的关键里程碑，核心技术平台赋能区域医疗、实现诊断能力本地化。',
+            source: '凤凰财经 / 网易新闻'
+        },
+        {
+            company: '迪安诊断',
+            title: '迪安诊断推出血液病智能体系，携手金衢区域共建专病数据库',
+            date: '2025-08-07',
+            focus: '迪安诊断携手浙江省金华衢州区域血液病专病联盟，启动"金衢区域血液病专病库"共建，按下血液病专病数据库建设启动键。结合AI技术赋能区域血液病诊疗，推动血液病数据驱动精准医疗。',
+            source: '迪安诊断官网'
+        },
+        {
+            company: '荻硕贝肯',
+            title: '上海荻硕贝肯成功申请HLA型别确定新专利，基因科技新进展',
+            date: '2025-02-15',
+            focus: '荻硕贝肯成功申请HLA型别确定新专利，在HLA分型技术领域实现突破。该公司专注于移植免疫诊疗技术开发，始终围绕HLA核心推动国内临床跨入以NGS检测技术为基础的高分辨分型阶段。',
+            source: '搜狐科技 / 荻硕贝肯官网'
+        },
+    ];
+
+    // === 学术活动 ===
+    const academicData = [
+        {
+            company: '康圣环球',
+            title: '2025年度康圣环球血液病诊疗指南培训圆满收官',
+            date: '2025-12-30',
+            focus: '康圣环球集团医学部成功举办线上《血液病诊疗指南培训第三期》，切实提升集团内医师及核心骨干的专业学术能力，积极响应集团医疗服务整体战略部署，全年三期培训覆盖血液病诊疗核心知识体系。',
+            source: '今日头条'
+        },
+        {
+            company: '康圣环球',
+            title: '2025康圣环球专科特检论坛：多组学技术助力血液病精准诊疗',
+            date: '2025-08-15',
+            focus: '康圣环球举办专科特检论坛，聚焦多组学技术在血液病精准诊疗中的应用。陈忠教授透露集团将于年底举办"康圣环球病例论坛"，推动医生、技师与科研人员无障碍交流，加速血液病精准诊疗技术发展。',
+            source: '百家号'
+        },
+        {
+            company: '迪安诊断',
+            title: '聚焦MRD精准监测，迪安诊断亮相血液病盛会',
+            date: '2025-11-17',
+            focus: '迪安诊断亮相中国非公立医疗机构协会血液病专业委员会2025年学术年会，展出MRD精准监测方案。北京迪安技术专家李昕权教授当选血液病专委会副主任委员，并作多发性骨髓瘤MRD评估专题报告。',
+            source: '雪球 / 搜狐'
+        },
+        {
+            company: '协和博精',
+            title: '【ASH 2025信息速递】中国医学科学院血液病医院研究成果亮相',
+            date: '2025-12-09',
+            focus: '协和博精作为中国医学科学院血液病医院诊断平台延伸，关注并传播ASH 2025最新血液学研究进展。公司聚焦血液病基因筛查项目研发创新，以血研所核心技术力量为支撑，为临床提供精准检测服务。',
+            source: '微信热点'
+        },
+        {
+            company: '金域医学',
+            title: '金域医学2024血液病年度回顾：产学研合作与数智化转型双轮驱动',
+            date: '2025-01-09',
+            focus: '金域医学发布血液病年度回顾，在产学研合作、数智化转型、疾病联盟及项目升级等方面持续发力，引领血液病检测行业发展。以临床和疾病为导向，构建血液病精准诊断生态体系。',
+            source: '金域医学官网'
+        },
+    ];
+
+    // === 商业及业务合作 ===
+    const businessData = [
+        {
+            company: '迪安诊断',
+            title: '迪安诊断与湖北省智能医学会智能血液学专委会达成战略合作',
+            date: '2025-11-29',
+            focus: '迪安诊断与湖北省智能医学会智能血液学专委会在武汉举行签约仪式，双方将充分整合优势资源，共同规划建设湖北省血液病智能体系，助力湖北省血液病诊疗智能化升级，深度参与湖北区域医疗建设。',
+            source: '搜狐 / 新浪财经'
+        },
+        {
+            company: '迪安诊断',
+            title: '迪安诊断与细胞生态海河实验室达成战略合作，助力血液学发展',
+            date: '2024-03-22',
+            focus: '迪安诊断与中国医学科学院血液病医院承建的细胞生态海河实验室签约，共建"精准医学诊断创新研发联合实验室"，从科研转化、疾病规范化诊疗、数字医疗、学科建设等方面推动前沿技术在血液学诊断领域的临床应用。',
+            source: '搜狐 / 界面新闻'
+        },
+        {
+            company: '金域医学',
+            title: '金域医学2025年大幅减亏，产学研合作表现不俗',
+            date: '2026-04-25',
+            focus: '金域医学2025年年度报告显示，公司先后与北京协和医院、北京大学人民医院、香港中文大学（深圳）等数十家医疗机构、高校，以及腾讯等科技企业开展产学研合作，持续深化血液病精准检测领域合作布局。',
+            source: '东方财富 / 新浪财经'
+        },
+        {
+            company: '荻硕贝肯',
+            title: '荻硕贝肯与西安交大一附院共建国家医学中心项目，攻克HLA"卡脖子"问题',
+            date: '2023-02-06',
+            focus: '西安交大一附院与荻硕贝肯携手共建国家医学中心项目，联合研发符合中国人群遗传特征的HLA抗体检测系统和检测平台，建设器官移植排斥监测与预警平台，打破国外技术垄断，攻克体液免疫"卡脖子"技术难题。',
+            source: '三秦网 / 健康界 / 荻硕贝肯官网'
+        },
+        {
+            company: '迪安诊断',
+            title: '迪安诊断与上海瑞金血液病医疗联合体达成战略合作',
+            date: '2024-01-05',
+            focus: '迪安诊断与上海瑞金血液病医疗联合体签约，聚焦血液病临床检测服务，在科学研究、大数据分析、科研成果转化、人才培养、学术活动等方面建立深度合作，共同推进血液病精准诊疗技术发展与创新成果应用转化。',
+            source: '新浪财经 / 搜狐'
+        },
+    ];
+
+    // ==================== 渲染 ====================
+
+    const allData = { platform: platformData, academic: academicData, business: businessData };
+    const sectionClass = { platform: 'section-platform', academic: 'section-academic', business: 'section-business' };
+    const cardClass = { platform: 'card-platform', academic: 'card-academic', business: 'card-business' };
+    const focusLabel = { platform: '平台动向', academic: '学术活动', business: '商业合作' };
+
+    let currentFilters = { platform: 'all', academic: 'all', business: 'all' };
+
+    function renderCards(section) {
+        const data = allData[section];
+        const filter = currentFilters[section];
+        const filtered = filter === 'all' ? data : data.filter(d => d.company === filter);
+        const grid = document.getElementById(`grid-${section}`);
+
+        if (filtered.length === 0) {
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--text-secondary);">暂无数据</div>';
+            return;
+        }
+
+        grid.innerHTML = filtered.map(item => `
+            <div class="data-card ${cardClass[section]} ${sectionClass[section]}">
+                <div class="data-card-header">
+                    <span class="company-tag" style="background:${companyColors[item.company] || '#6b7280'}">${item.company}</span>
+                    <span class="card-title">${item.title}</span>
+                    <span class="card-date">${item.date}</span>
+                </div>
+                <div class="data-card-body">
+                    <span class="focus-label">${focusLabel[section]}</span>
+                    <div class="focus-text">${item.focus}</div>
+                    <div class="card-source">来源：${item.source}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // ==================== 交互 ====================
+
+    function switchSection(section) {
+        document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(`tab-${section}`).classList.add('active');
+        ['platform', 'academic', 'business'].forEach(s => {
+            document.getElementById(`section-${s}`).style.display = s === section ? 'block' : 'none';
+        });
+    }
+
+    // Filter buttons
+    document.addEventListener('click', function(e) {
+        if (!e.target.classList.contains('filter-btn')) return;
+        const section = e.target.dataset.section;
+        const value = e.target.dataset.value;
+        if (!section) return;
+
+        const siblings = e.target.parentElement.querySelectorAll('.filter-btn');
+        siblings.forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+
+        currentFilters[section] = value;
+        renderCards(section);
+    });
+
+    // ==================== 初始化 ====================
+    renderCards('platform');
+    renderCards('academic');
+    renderCards('business');
+    </script>
+</body>
+</html>
