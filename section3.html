@@ -21,8 +21,16 @@
             --text-secondary: #6b7280;
             --text-light: #9ca3af;
             --border: #f3f4f6;
+            --accent-teal: #0d9488;
+            --accent-teal-light: #ccfbf1;
+            --accent-red: #dc2626;
+            --accent-red-light: #fef2f2;
+            --accent-amber: #d97706;
+            --accent-amber-light: #fef3c7;
             --accent-violet: #7c3aed;
             --accent-violet-light: #ede9fe;
+            --accent-emerald: #059669;
+            --accent-emerald-light: #d1fae5;
             --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
             --shadow-card: 0 4px 16px rgba(0,0,0,0.08);
             --shadow-hover: 0 8px 30px rgba(0,0,0,0.12);
@@ -87,16 +95,60 @@
         /* Container */
         .container { max-width: 1200px; margin: 0 auto; padding: 24px; width: 100%; }
 
-        /* Placeholder */
-        .placeholder { background: var(--card); border-radius: var(--radius); padding: 64px 32px; text-align: center; box-shadow: var(--shadow-card); }
-        .placeholder .icon { font-size: 56px; margin-bottom: 16px; }
-        .placeholder h2 { font-size: 20px; margin-bottom: 12px; }
-        .placeholder p { font-size: 14px; color: var(--text-secondary); max-width: 500px; margin: 0 auto; line-height: 1.8; }
-        .placeholder .features { display: flex; gap: 16px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
-        .placeholder .feat { background: var(--accent-violet-light); color: var(--accent-violet); padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+        /* Section Tabs */
+        .section-tabs { display: flex; gap: 0; margin-bottom: 20px; background: var(--card); border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow-card); }
+        .section-tab { flex: 1; padding: 14px 16px; text-align: center; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; background: transparent; color: var(--text-secondary); border-bottom: 3px solid transparent; }
+        .section-tab:hover { background: #f8fafc; }
+        .section-tab.active { border-bottom-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+        .section-tab .tab-icon { display: block; font-size: 20px; margin-bottom: 4px; }
+        .section-tab .tab-label { display: block; font-size: 13px; }
+        .section-tab .tab-count { font-size: 11px; color: var(--text-secondary); }
+
+        /* Info Box */
+        .info-box { background: var(--primary-light); border-left: 4px solid var(--primary); padding: 14px 18px; border-radius: 0 10px 10px 0; font-size: 13px; color: var(--primary-dark); margin-bottom: 20px; }
+        .info-box strong { display: block; margin-bottom: 4px; }
+
+        /* Card Grid */
+        .card-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        @media (min-width: 768px) { .card-grid { grid-template-columns: repeat(2, 1fr); } }
+
+        /* Data Card */
+        .data-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow-card); overflow: hidden; transition: all 0.2s; border-left: 4px solid var(--border); }
+        .data-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+        .data-card-header { padding: 14px 18px 10px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); }
+        .category-tag { display: inline-block; padding: 3px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; color: white; white-space: nowrap; }
+        .card-title { font-size: 14px; font-weight: 600; flex: 1; line-height: 1.4; }
+        .card-date { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+        .data-card-body { padding: 12px 18px 14px; }
+        .focus-label { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; margin-bottom: 6px; }
+        .focus-text { font-size: 13px; color: var(--text); line-height: 1.7; }
+        .card-source { font-size: 11px; color: var(--text-secondary); margin-top: 8px; }
+        .card-link { display: inline-block; font-size: 12px; color: var(--primary); margin-top: 6px; text-decoration: none; font-weight: 500; }
+        .card-link:hover { text-decoration: underline; }
+
+        /* Category Colors */
+        .card-policy { border-left-color: var(--accent-red); }
+        .card-tech { border-left-color: var(--accent-violet); }
+        .card-market { border-left-color: var(--accent-emerald); }
+
+        .section-policy .focus-label { color: var(--accent-red); background: var(--accent-red-light); }
+        .section-tech .focus-label { color: var(--accent-violet); background: var(--accent-violet-light); }
+        .section-market .focus-label { color: var(--accent-emerald); background: var(--accent-emerald-light); }
+
+        /* Filter Bar */
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+        .filter-group { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+        .filter-label { font-size: 12px; color: var(--text-secondary); font-weight: 500; margin-right: 4px; }
+        .filter-btn { padding: 5px 14px; border: 1px solid var(--border); border-radius: 20px; font-size: 12px; cursor: pointer; background: var(--card); transition: all 0.15s; color: var(--text-secondary); }
+        .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .filter-btn:hover:not(.active) { border-color: var(--primary); color: var(--primary); }
 
         /* Footer */
         .page-footer { text-align: center; padding: 24px; color: var(--text-light); font-size: 11px; border-top: 1px solid var(--border); margin-top: auto; }
+
+        /* Demo Badge */
+        .demo-badge { display: inline-block; background: linear-gradient(135deg, #f97316, #f472b6); color: white; padding: 2px 10px; border-radius: 12px; font-size: 10px; font-weight: 600; margin-left: 8px; vertical-align: middle; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.6;} }
 
         /* Responsive */
         @media (max-width: 900px) {
@@ -107,6 +159,10 @@
             .sidebar-footer { display: none; }
             .main { margin-left: 60px; }
             .page-header h1 { font-size: 18px; }
+            .section-tab { padding: 10px 8px; }
+            .section-tab .tab-icon { font-size: 16px; }
+            .section-tab .tab-label { font-size: 11px; }
+            .data-card-header { flex-wrap: wrap; }
         }
     </style>
 </head>
@@ -134,6 +190,10 @@
                 <span class="nav-icon">&#x1F4CA;</span>
                 <span>行业风向标</span>
             </a>
+            <a href="qa.html" class="nav-item">
+                <span class="nav-icon">&#x1F30C;</span>
+                <span>检答星球</span>
+            </a>
         </div>
         <div class="sidebar-footer">
             v2.2 &middot; 金域医学广州市场部
@@ -143,28 +203,301 @@
     <!-- ===== Main Content ===== -->
     <div class="main">
         <div class="page-header">
-            <h1>政策及行业分析</h1>
-            <div class="subtitle">汇总政策法规、医保变动、技术标准及市场研究</div>
+            <h1>政策及行业分析 <span class="demo-badge">DEMO</span></h1>
+            <div class="subtitle">汇总政策法规、医保变动、技术标准更新及市场研究 | 2024年至今</div>
         </div>
 
-        <div class="container">
-            <div class="placeholder">
-                <div class="icon">&#x1F4CA;</div>
-                <h2>政策及行业分析</h2>
-                <p>汇总行业政策法规、医保目录变动、技术标准更新及市场研究报告，提供宏观环境分析支撑。板块1跑通后启动设计。</p>
-                <div class="features">
-                    <span class="feat">政策法规</span>
-                    <span class="feat">医保变动</span>
-                    <span class="feat">技术标准</span>
-                    <span class="feat">市场报告</span>
-                    <span class="feat">行业趋势</span>
+    <div class="container">
+        <!-- Section Tabs -->
+        <div class="section-tabs">
+            <button class="section-tab active" onclick="switchSection('policy')" id="tab-policy">
+                <span class="tab-icon">&#x1F4CB;</span>
+                <span class="tab-label">行业政策法规</span>
+                <span class="tab-count">5条</span>
+            </button>
+            <button class="section-tab" onclick="switchSection('tech')" id="tab-tech">
+                <span class="tab-icon">&#x1F52C;</span>
+                <span class="tab-label">技术标准</span>
+                <span class="tab-count">5条</span>
+            </button>
+            <button class="section-tab" onclick="switchSection('market')" id="tab-market">
+                <span class="tab-icon">&#x1F4C8;</span>
+                <span class="tab-label">市场研究</span>
+                <span class="tab-count">5条</span>
+            </button>
+        </div>
+
+        <!-- Policy Section -->
+        <div id="section-policy">
+            <div class="info-box">
+                <strong>行业政策法规 <span style="font-weight:400;font-size:12px;">（共5条）</span></strong>
+                追踪国家医保局、卫健委、药审中心等发布的血液病实验室检测相关政策，包括医保报销、价格立项、审评指导等，洞察政策对行业的影响。
+            </div>
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <span class="filter-label">类型:</span>
+                    <button class="filter-btn active" data-section="policy" data-value="all">全部</button>
+                    <button class="filter-btn" data-section="policy" data-value="医保价格">医保价格</button>
+                    <button class="filter-btn" data-section="policy" data-value="审评指导">审评指导</button>
+                    <button class="filter-btn" data-section="policy" data-value="专家共识">专家共识</button>
                 </div>
             </div>
+            <div class="card-grid" id="grid-policy"></div>
         </div>
 
-        <div class="page-footer">
-            检不断 理不乱 v2.2 &middot; 政策及行业分析 | 设计中
+        <!-- Tech Section -->
+        <div id="section-tech" style="display:none;">
+            <div class="info-box">
+                <strong>技术标准 <span style="font-weight:400;font-size:12px;">（共5条）</span></strong>
+                跟踪ISO 15189/CAP认证、室间质评、血液病分子诊断专家共识、NGS技术规范等更新，把握检测技术标准化进展。
+            </div>
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <span class="filter-label">类型:</span>
+                    <button class="filter-btn active" data-section="tech" data-value="all">全部</button>
+                    <button class="filter-btn" data-section="tech" data-value="国际共识">国际共识</button>
+                    <button class="filter-btn" data-section="tech" data-value="国内共识">国内共识</button>
+                    <button class="filter-btn" data-section="tech" data-value="认证质评">认证质评</button>
+                </div>
+            </div>
+            <div class="card-grid" id="grid-tech"></div>
         </div>
+
+        <!-- Market Section -->
+        <div id="section-market" style="display:none;">
+            <div class="info-box">
+                <strong>市场研究 <span style="font-weight:400;font-size:12px;">（共5条）</span></strong>
+                汇总TOP5第三方医检机构财报、血液病检测渗透率分析、行业趋势报告等，为营销决策提供数据支撑。
+            </div>
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <span class="filter-label">类型:</span>
+                    <button class="filter-btn active" data-section="market" data-value="all">全部</button>
+                    <button class="filter-btn" data-section="market" data-value="财报数据">财报数据</button>
+                    <button class="filter-btn" data-section="market" data-value="行业分析">行业分析</button>
+                </div>
+            </div>
+            <div class="card-grid" id="grid-market"></div>
+        </div>
+    </div>
+
+    <div class="page-footer">
+        检不断 理不乱 v2.2 &middot; 政策及行业分析 DEMO | 数据来源：国家医保局/CDE/ELN/公开财报 + AI辅助检索
+    </div>
     </div><!-- end .main -->
+
+    <script>
+    // ==================== 数据 ====================
+
+    const categoryColors = {
+        '医保价格': '#dc2626',
+        '审评指导': '#d97706',
+        '专家共识': '#7c3aed',
+        '国际共识': '#0d9488',
+        '国内共识': '#2563eb',
+        '认证质评': '#059669',
+        '财报数据': '#f97316',
+        '行业分析': '#6366f1',
+    };
+
+    // === 行业政策法规 ===
+    const policyData = [
+        {
+            category: '医保价格',
+            title: '国家医保局印发《血液系统类医疗服务价格项目立项指南（试行）》',
+            date: '2025-03-03',
+            focus: '国家医保局编制发布血液系统类医疗服务价格项目立项指南，为深化医疗服务价格改革、推进全国项目规范奠定基础。指南对血液系统检测类项目价格体系进行统一规范，直接影响血液病基因检测项目的定价与报销路径，第三方医检企业需关注各地落地细则。',
+            source: '国家医保局官网',
+            url: 'https://www.nhsa.gov.cn/art/2025/3/3/art_201_15850.html'
+        },
+        {
+            category: '审评指导',
+            title: 'CDE发布《多发性骨髓瘤药物临床试验中应用微小残留病（MRD）的技术指导原则》',
+            date: '2021-11-17',
+            focus: '国家药监局药审中心（CDE）组织制定MM药物临床试验MRD检测技术指导原则，明确MRD检测方法学要求、检测时机、阈值设定等关键要素。该指导原则为MM新药研发中MRD应用提供规范框架，间接推动MRD检测服务市场发展，对第三方检测机构MRD项目设计具有重要参考价值。',
+            source: 'CDE官网 / 医脉通',
+            url: 'https://www.medsci.cn/guideline/show_article.do?id=e1a021c002266928'
+        },
+        {
+            category: '专家共识',
+            title: '《基于骨髓样本的多发性骨髓瘤微小残留病检测中国专家共识》发布',
+            date: '2024-06-14',
+            focus: '中国专家共识对MM骨髓MRD检测的样本处理、检测方法（流式/NGS）、灵敏度要求、结果解读等进行系统规范。共识强调NGS-MRD灵敏度可达10⁻⁵~10⁻⁶，在预后评估和疗效监测中价值突出，对第三方医检MRD检测项目开发具有直接指导意义。',
+            source: '丁香园用药助手',
+            url: 'https://drugs.dxy.cn/pc/clinicalGuidelines/63bmepepm2Fgmepepmr9gQpBEfDrLRvg=='
+        },
+        {
+            category: '医保价格',
+            title: '《血液系统类医疗服务价格项目立项指南》各省落地——福建省率先转发实施',
+            date: '2025-09-26',
+            focus: '福建省医保局率先转发国家立项指南并明确本省实施路径，对血液病检测类项目价格进行分类整合。新项目定价机制将影响第三方检测机构血液病项目的收费标准与准入模式，特检项目能否纳入医保报销范围成为关键变量。',
+            source: '福建省医保局',
+            url: 'https://ybj.fj.gov.cn/ztzl/ylfwjgxm/lxzn/202509/t20250926_7015536.htm'
+        },
+        {
+            category: '医保价格',
+            title: '血液病基因检测医保报销现状：各地政策差异显著，特检项目仍是空白',
+            date: '2025-12-26',
+            focus: '目前血液病基因检测尚未统一纳入医保报销目录，各地政策差异较大。基本医保主要覆盖常规检验项目，NGS基因检测、MRD监测等特检项目基本需患者自费。广东省特检项目医保报销进展相对缓慢，第三方医检企业需密切关注医保扩容动态，探索商保合作等替代支付路径。',
+            source: '百度法律智能 / 综合整理',
+            url: '#'
+        },
+    ];
+
+    // === 技术标准 ===
+    const techData = [
+        {
+            category: '国际共识',
+            title: '2025 ELN-DAVID共识：56项建议重塑AML MRD标准化诊疗',
+            date: '2025-12-15',
+            focus: '欧洲白血病网（ELN）联合DAVID联盟发布AML-MRD评估共识文件，引入"低水平阳性（MRD-LL）"概念及"最佳/警示/高风险"定性反应分类。共识涵盖MFC、NGS、PCR等MRD检测方法的技术考量、临床应用建议及临床试验整合方案，为AML的MRD检测标准化提供全面框架，对国内MRD检测项目设计具有重要参考价值。',
+            source: '搜狐 / 丁香园用药助手',
+            url: 'https://www.sohu.com/a/976490461_121118854'
+        },
+        {
+            category: '国际共识',
+            title: '2025 EHA/ELN专家共识：急性白血病疗效评估中的原始细胞定义统一',
+            date: '2025-09-04',
+            focus: '欧洲血液学协会（EHA）与ELN联合制定共识，统一急性白血病疗效评估中原始细胞的定义与评估标准。该共识旨在解决不同研究中原始细胞计数不一致的问题，为临床研究终点评估提供标准化框架，直接影响AML疗效评估和MRD检测的判读标准。',
+            source: '丁香园用药助手',
+            url: 'https://drugs.dxy.cn/pc/clinicalGuidelines/A5NHLhrnbFE9ne1xENkOXg=='
+        },
+        {
+            category: '国内共识',
+            title: '马军教授团队证实NGS联合流式检测在AML MRD中具有更高预后预测价值',
+            date: '2025-07-08',
+            focus: '哈尔滨血液病肿瘤研究所马军教授团队在Ther Adv Hematol发表研究，证实NGS联合流式细胞术检测AML MRD较单一方法具有更高预后预测价值。该研究为国内AML MRD检测技术路径选择提供了循证依据，支持"NGS+流式"双平台检测策略，与当前第三方医检MRD项目发展趋势一致。',
+            source: '梅斯医学 (MedSci)',
+            url: 'https://www.medsci.cn/article/show_article.do?id=c564885660a4'
+        },
+        {
+            category: '认证质评',
+            title: '迪安诊断通过NCCL和CAP室间质评，ISO 15189认可体系持续完善',
+            date: '2024-10-11',
+            focus: '迪安诊断临床基因组中心严格按照ISO 15189认可和美国CAP认证要求进行实验室质量管理，高水平通过NCCL和CAP室间质评。该中心具备自主研发、样本检测、生信分析、报告解读、遗传咨询等综合能力，为血液病NGS检测质量提供认证保障，也反映出行业对国际质量体系认证的重视趋势。',
+            source: '搜狐',
+            url: 'https://www.sohu.com/a/815669046_338120'
+        },
+        {
+            category: '国内共识',
+            title: '急性髓系白血病诊疗指南2025版更新：分子诊断与预后分层新进展',
+            date: '2025-03-24',
+            focus: 'AML诊疗指南2025版更新，新增BCOR等7个基因突变检测推荐，CEBPA双突变定义为bZIP框内突变，耐受化疗分层替代年龄分层。分子诊断在预后分层中的权重持续提升，NGS检测在AML诊疗路径中的地位进一步巩固，推动第三方医检NGS Panel迭代升级。',
+            source: 'iHematology',
+            url: 'https://www.ihemato.com/Detail?id=574'
+        },
+    ];
+
+    // === 市场研究 ===
+    const marketData = [
+        {
+            category: '财报数据',
+            title: '金域医学2025年报：营收60.30亿元，大幅减亏，2026Q1扭亏为盈',
+            date: '2026-04-24',
+            focus: '金域医学2025年实现营收60.30亿元（同比-16.12%），归母净利润-1.73亿元，同比大幅减亏；经营性现金流12.02亿元（+32.62%），毛利率提升1.6个百分点。2026Q1营收13.51亿元，归母净利润0.43亿元（+254%），业绩拐点确立。血液病检测作为核心特检板块持续发力，NGS年检测量超10万例。',
+            source: '人民网广东 / 界面新闻',
+            url: 'http://gd.people.com.cn/n2/2026/0425/c123932-41562869.html'
+        },
+        {
+            category: '财报数据',
+            title: '迪安诊断2025年报：营收100.96亿元，扭亏为盈，现金流创历史新高',
+            date: '2026-04-22',
+            focus: '迪安诊断2025年实现营收100.96亿元（同比-17.22%），归母净利润0.44亿元，成功扭亏为盈（上年亏损3.57亿元）；经营活动现金流20.28亿元，创历史新高。战略从追求规模扩张转向聚焦盈利质量，"服务+产品"双轮驱动，血液病特检板块投入持续加码。',
+            source: '迪安诊断官网 / 百度百家号',
+            url: 'https://www.dazd.cn/home/news/detail.html?id=2122'
+        },
+        {
+            category: '财报数据',
+            title: '康圣环球2025年报：营收9.34亿元（+0.65%），净亏损收窄至5515万元',
+            date: '2026-03-30',
+            focus: '康圣环球（09960.HK）2025年营收9.34亿元，同比微增0.65%；净亏损5514.9万元，同比减亏9.12%。公司在第三方医疗检测行业深度调整期中保持收入微增，医保控费与检验结果互认对传统检验业务量价两端带来阶段性压力，特检业务结构优化持续推进。',
+            source: '百度百家号 / 新浪财经',
+            url: 'https://baijiahao.baidu.com/s?id=1861066527454194082'
+        },
+        {
+            category: '行业分析',
+            title: '金域、迪安、艾迪康ICL三巨头财报对比：仅一家盈利，行业触底信号显现',
+            date: '2025-08-26',
+            focus: '2025上半年，金域医学营收29.97亿元，迪安诊断营收约50亿元，艾迪康营收约23亿元。三家中仅迪安实现盈利，金域和艾迪康仍亏损。行业整体收入面临下行压力，但现金流改善、成本控制、AI赋能、业务结构优化等积极信号显现，结构性复苏趋势渐明。',
+            source: '雪球',
+            url: 'https://xueqiu.com/9923533025/348992122'
+        },
+        {
+            category: '行业分析',
+            title: 'ICL血液病诊断实验室大盘点：金域NGS年检测量超10万例，行业渗透率提升空间广阔',
+            date: '2024-06-05',
+            focus: '金域医学实现血液病全病种NGS检测覆盖，NGS年检测量超10万例；迪安诊断以"服务+产品"模式构建血液病检测体系；康圣环球专注高端特检；协和博精依托血研所核心技术。国内ICL行业渗透率仍低（约5%），对比海外（美日30-35%）提升空间巨大，血液病特检是重要增长引擎。',
+            source: '雪球',
+            url: 'https://xueqiu.com/9923533025/292680888'
+        },
+    ];
+
+    // ==================== 渲染 ====================
+
+    const allData = { policy: policyData, tech: techData, market: marketData };
+    const sectionClass = { policy: 'section-policy', tech: 'section-tech', market: 'section-market' };
+    const cardClass = { policy: 'card-policy', tech: 'card-tech', market: 'card-market' };
+    const focusLabel = { policy: '政策法规', tech: '技术标准', market: '市场研究' };
+
+    let currentFilters = { policy: 'all', tech: 'all', market: 'all' };
+
+    function renderCards(section) {
+        const data = allData[section];
+        const filter = currentFilters[section];
+        const filtered = filter === 'all' ? data : data.filter(d => d.category === filter);
+        const grid = document.getElementById(`grid-${section}`);
+
+        if (filtered.length === 0) {
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--text-secondary);">暂无数据</div>';
+            return;
+        }
+
+        grid.innerHTML = filtered.map(item => `
+            <div class="data-card ${cardClass[section]} ${sectionClass[section]}">
+                <div class="data-card-header">
+                    <span class="category-tag" style="background:${categoryColors[item.category] || '#6b7280'}">${item.category}</span>
+                    <span class="card-title">${item.title}</span>
+                    <span class="card-date">${item.date}</span>
+                </div>
+                <div class="data-card-body">
+                    <span class="focus-label">${focusLabel[section]}</span>
+                    <div class="focus-text">${item.focus}</div>
+                    <div class="card-source">来源：${item.source}</div>
+                    ${item.url && item.url !== '#' ? `<a class="card-link" href="${item.url}" target="_blank">查看原文 &rarr;</a>` : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // ==================== 交互 ====================
+
+    function switchSection(section) {
+        document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(`tab-${section}`).classList.add('active');
+        ['policy', 'tech', 'market'].forEach(s => {
+            document.getElementById(`section-${s}`).style.display = s === section ? 'block' : 'none';
+        });
+    }
+
+    // Filter buttons
+    document.addEventListener('click', function(e) {
+        if (!e.target.classList.contains('filter-btn')) return;
+        const section = e.target.dataset.section;
+        const value = e.target.dataset.value;
+        if (!section) return;
+
+        const siblings = e.target.parentElement.querySelectorAll('.filter-btn');
+        siblings.forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+
+        currentFilters[section] = value;
+        renderCards(section);
+    });
+
+    // ==================== 初始化 ====================
+    renderCards('policy');
+    renderCards('tech');
+    renderCards('market');
+    </script>
 </body>
 </html>

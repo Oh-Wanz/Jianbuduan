@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>检答星球 | 检不断 理不乱</title>
+    <style>
+        :root {
+            --sidebar-bg: #4b5563;
+            --sidebar-hover: #6b7280;
+            --sidebar-active: #f97316;
+            --sidebar-text: #d1d5db;
+            --sidebar-text-active: #ffffff;
+            --bg-gradient-start: #fff7ed;
+            --bg-gradient-end: #ffffff;
+            --primary: #f97316;
+            --primary-light: #fff7ed;
+            --primary-dark: #c2410c;
+            --card: #ffffff;
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --text-light: #9ca3af;
+            --border: #f3f4f6;
+            --accent-teal: #0d9488;
+            --accent-teal-light: #ccfbf1;
+            --accent-red: #dc2626;
+            --accent-red-light: #fef2f2;
+            --accent-amber: #d97706;
+            --accent-amber-light: #fef3c7;
+            --accent-violet: #7c3aed;
+            --accent-violet-light: #ede9fe;
+            --accent-pink: #f472b6;
+            --accent-pink-light: #fce7f3;
+            --accent-blue: #2563eb;
+            --accent-blue-light: #dbeafe;
+            --shadow-card: 0 4px 16px rgba(0,0,0,0.08);
+            --shadow-hover: 0 8px 30px rgba(0,0,0,0.12);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(180deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ========== Sidebar ========== */
+        .sidebar {
+            width: 220px;
+            min-height: 100vh;
+            background: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            padding: 28px 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .sidebar-logo .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--sidebar-text-active);
+            letter-spacing: 1px;
+        }
+
+        .sidebar-logo .logo-sub {
+            font-size: 11px;
+            color: var(--sidebar-text);
+            margin-top: 4px;
+            opacity: 0.7;
+        }
+
+        .sidebar-nav { flex: 1; padding: 16px 12px; }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            color: var(--sidebar-text);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.25s ease;
+            margin-bottom: 4px;
+        }
+
+        .nav-item:hover { background: var(--sidebar-hover); color: var(--sidebar-text-active); }
+
+        .nav-item.active {
+            background: var(--sidebar-active);
+            color: var(--sidebar-text-active);
+            box-shadow: 0 2px 8px rgba(249,115,22,0.3);
+        }
+
+        .nav-icon { width: 20px; text-align: center; font-size: 16px; }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            font-size: 11px;
+            color: var(--sidebar-text);
+            opacity: 0.5;
+        }
+
+        /* ========== Main ========== */
+        .main {
+            flex: 1;
+            margin-left: 220px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ========== Page Header ========== */
+        .page-header {
+            width: 100%;
+            padding: 48px 40px 24px;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #ea580c 0%, #f97316 30%, #f472b6 70%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+        }
+
+        .demo-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #f97316, #f472b6);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
+            vertical-align: middle;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* ========== Question Navigation Tabs ========== */
+        .q-tabs {
+            display: flex;
+            gap: 12px;
+            padding: 0 40px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .q-tab {
+            padding: 14px 24px;
+            border-radius: 14px;
+            border: 2px solid var(--border);
+            background: var(--card);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 340px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .q-tab:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 4px 16px rgba(249,115,22,0.15);
+            transform: translateY(-2px);
+        }
+
+        .q-tab.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            box-shadow: 0 4px 16px rgba(249,115,22,0.2);
+        }
+
+        .q-tab .tab-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+        }
+
+        .q-tab.active .tab-num {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* ========== Answer Section ========== */
+        .answer-section {
+            width: 100%;
+            max-width: 960px;
+            padding: 0 40px 48px;
+            display: none;
+        }
+
+        .answer-section.active { display: block; }
+
+        .answer-header {
+            margin-bottom: 24px;
+        }
+
+        .answer-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .answer-header .a-meta {
+            font-size: 13px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .answer-summary {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 24px 28px;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 24px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .answer-summary h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .answer-summary ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .answer-summary li {
+            padding: 6px 0;
+            font-size: 14px;
+            color: var(--text);
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .answer-summary li::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--primary);
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+
+        /* ========== Project Cards Grid ========== */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 14px;
+        }
+
+        .project-card {
+            background: var(--card);
+            border-radius: var(--radius-sm);
+            padding: 18px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+            transition: all 0.25s ease;
+        }
+
+        .project-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        .pc-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .pc-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        .pc-micm {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 500;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-left: 8px;
+        }
+
+        .pc-micm.mol { background: #f0fdf4; color: #16a34a; }
+        .pc-micm.i { background: #eff6ff; color: #2563eb; }
+        .pc-micm.tx { background: #faf5ff; color: #9333ea; }
+
+        .pc-platform {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .pc-scene {
+            font-size: 12px;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        .pc-date {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 8px;
+            text-align: right;
+        }
+
+        /* ========== Comparison Table ========== */
+        .compare-table-wrap {
+            background: var(--card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 20px;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .compare-table th {
+            background: #f9fafb;
+            padding: 14px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: left;
+            color: var(--text);
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+        }
+
+        .compare-table td {
+            padding: 14px 16px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+            vertical-align: top;
+        }
+
+        .compare-table tr:last-child td { border-bottom: none; }
+
+        .compare-table tr:hover td { background: #fffbf5; }
+
+        .ct-company {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ct-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .ct-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            min-width: 24px;
+        }
+
+        .ct-detail {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .ct-detail strong { color: var(--text); font-weight: 600; }
+
+        .ct-none {
+            color: var(--text-light);
+            font-style: italic;
+            font-size: 12px;
+        }
+
+        /* ========== Insight Box ========== */
+        .insight-box {
+            background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
+            border-radius: var(--radius-sm);
+            padding: 20px 24px;
+            margin-top: 24px;
+            border: 1px solid #fed7aa;
+        }
+
+        .insight-box h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent-amber);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .insight-box p {
+            font-size: 13px;
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        .insight-box ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 8px;
+        }
+
+        .insight-box li {
+            font-size: 13px;
+            color: var(--text);
+            padding: 4px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .insight-box li::before {
+            content: '\25B8';
+            position: absolute;
+            left: 0;
+            color: var(--accent-amber);
+        }
+
+        /* ========== Info Notice ========== */
+        .info-notice {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: #eff6ff;
+            border-radius: var(--radius-sm);
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #1e40af;
+        }
+
+        .info-notice .notice-icon { font-size: 16px; flex-shrink: 0; }
+
+        /* ========== Company Legend ========== */
+        .company-legend {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        /* ========== Footer ========== */
+        .page-footer {
+            width: 100%;
+            text-align: center;
+            padding: 24px;
+            color: var(--text-light);
+            font-size: 11px;
+            border-top: 1px solid var(--border);
+            margin-top: auto;
+        }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 900px) {
+            .sidebar { width: 60px; }
+            .sidebar-logo .logo-text, .sidebar-logo .logo-sub { display: none; }
+            .nav-item span { display: none; }
+            .nav-item { justify-content: center; padding: 12px; }
+            .sidebar-footer { display: none; }
+            .main { margin-left: 60px; }
+            .page-header { padding: 32px 20px 16px; }
+            .page-header h1 { font-size: 24px; }
+            .q-tabs { padding: 0 20px; }
+            .q-tab { padding: 10px 16px; font-size: 13px; }
+            .answer-section { padding: 0 20px 32px; }
+            .project-grid { grid-template-columns: 1fr; }
+            .compare-table-wrap { overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== Sidebar ===== -->
+    <nav class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-text">检不断 理不乱</div>
+            <div class="logo-sub">血液病医检竞品知识库</div>
+        </div>
+        <div class="sidebar-nav">
+            <a href="index.html" class="nav-item">
+                <span class="nav-icon">&#x1F3E0;</span>
+                <span>首页</span>
+            </a>
+            <a href="section1.html" class="nav-item">
+                <span class="nav-icon">&#x1F9EA;</span>
+                <span>新项目开展</span>
+            </a>
+            <a href="section2.html" class="nav-item">
+                <span class="nav-icon">&#x1F3E2;</span>
+                <span>学术活动动态</span>
+            </a>
+            <a href="section3.html" class="nav-item">
+                <span class="nav-icon">&#x1F4CA;</span>
+                <span>行业风向标</span>
+            </a>
+            <a href="qa.html" class="nav-item active">
+                <span class="nav-icon">&#x1F4AC;</span>
+                <span>&#x1F30C;检答星球</span>
+            </a>
+        </div>
+        <div class="sidebar-footer">
+            v2.2 &middot; 金域医学广州市场部
+        </div>
+    </nav>
+
+    <!-- ===== Main Content ===== -->
+    <div class="main">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>检答星球 <span class="demo-badge">DEMO</span></h1>
+            <p>基于知识库数据，快速获取竞品对比分析</p>
+        </div>
+
+        <!-- Ask Bar: 在检答星球内继续提问 -->
+        <div style="width:100%;max-width:960px;padding:0 40px 16px;position:relative;">
+            <div style="display:flex;gap:8px;">
+                <input type="text" id="askInput" placeholder="继续提问... 例如：康圣环球有什么项目？" autocomplete="off" style="flex:1;padding:12px 16px;font-size:14px;border:2px solid var(--border);border-radius:10px;outline:none;font-family:inherit;transition:border-color 0.25s;" onfocus="this.style.borderColor='var(--primary)';showHistory()" onblur="setTimeout(()=>{this.style.borderColor='var(--border)';hideHistory()},200)" />
+                <button onclick="askFromPage()" style="padding:12px 18px;background:linear-gradient(135deg,#f97316,#f472b6);color:white;border:none;border-radius:10px;cursor:pointer;font-size:16px;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">&#x1F30C;</button>
+            </div>
+            <!-- Search History Dropdown -->
+            <div id="historyDropdown" style="display:none;position:absolute;top:48px;left:40px;right:58px;background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-card);z-index:50;overflow:hidden;"></div>
+        </div>
+
+        <!-- User Question Display: 展示从首页跳转来的问题 -->
+        <div id="userQuestion" style="display:none;width:100%;max-width:960px;padding:0 40px 8px;">
+            <div style="display:flex;align-items:flex-start;gap:10px;background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:14px 18px;">
+                <span style="font-size:18px;">&#x1F4AC;</span>
+                <div>
+                    <div style="font-size:12px;color:var(--primary-dark);font-weight:600;margin-bottom:4px;">你的问题</div>
+                    <div id="userQuestionText" style="font-size:14px;color:var(--text);line-height:1.6;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Results Area (关键词匹配知识库) -->
+        <div id="searchResults" style="display:none;width:100%;max-width:960px;padding:0 40px 16px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                <span style="font-size:14px;">&#x1F50D;</span>
+                <span style="font-size:14px;font-weight:600;color:var(--text);">知识库匹配结果</span>
+                <span id="resultCount" style="font-size:12px;color:var(--text-light);"></span>
+            </div>
+            <div id="resultList"></div>
+        </div>
+
+        <!-- No Match Hint -->
+        <div id="noMatchHint" style="display:none;width:100%;max-width:960px;padding:0 40px 16px;">
+            <div style="text-align:center;padding:28px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-card);">
+                <div style="font-size:32px;margin-bottom:8px;">&#x1F30C;</div>
+                <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px;">暂未找到直接匹配的答案</div>
+                <div style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">试试下方的热门问题，或换个关键词再问</div>
+            </div>
+        </div>
+
+        <!-- Template Answer (公司项目列表模板) -->
+        <div id="templateAnswer" style="display:none;width:100%;max-width:960px;padding:0 40px 16px;">
+        </div>
+
+        <!-- Question Tabs -->
+        <div class="q-tabs">
+            <div class="q-tab active" onclick="switchQ(0)">
+                <span class="tab-num">Q1</span>
+                <span>迪安诊断有哪些血液病项目？</span>
+            </div>
+            <div class="q-tab" onclick="switchQ(1)">
+                <span class="tab-num">Q2</span>
+                <span>各家公司MRD检测有何差异？</span>
+            </div>
+            <div class="q-tab" onclick="switchQ(2)">
+                <span class="tab-num">Q3</span>
+                <span>NGS Panel谁家最全？</span>
+            </div>
+        </div>
+
+        <!-- ==================== Q1: 迪安诊断 ==================== -->
+        <div class="answer-section active" id="q0">
+            <div class="answer-header">
+                <h2>&#x1F4CB; 迪安诊断血液病检测项目一览</h2>
+                <div class="a-meta">
+                    <span>数据来源：IMA「检脉通」知识库</span>
+                    <span>&middot;</span>
+                    <span>共 15 个项目</span>
+                    <span>&middot;</span>
+                    <span>更新至 2026-04</span>
+                </div>
+            </div>
+
+            <div class="answer-summary">
+                <h3>&#x1F4A1; 速览要点</h3>
+                <ul>
+                    <li>迪安诊断目前收录 <strong>15个</strong> 血液病检测项目，覆盖分子学(10项)和免疫分型(5项)两大领域</li>
+                    <li>分子学以 <strong>NGS</strong> 为核心平台，从180基因到521基因多档位覆盖，ctDNA液体活检为特色方向</li>
+                    <li>免疫分型以 <strong>流式细胞术</strong> 为主，覆盖浆细胞/骨髓瘤/免疫功能/快速鉴别等场景</li>
+                    <li>项目发布集中在 <strong>2025年6月至2026年4月</strong>，产品线布局速度较快</li>
+                </ul>
+            </div>
+
+            <div class="info-notice">
+                <span class="notice-icon">&#x2139;&#xFE0F;</span>
+                <span>按MICM分类展示，点击项目可跳转至板块1查看详情</span>
+            </div>
+
+            <!-- 分子学(Mol) 10项 -->
+            <h3 style="font-size:16px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+                <span style="background:#f0fdf4;color:#16a34a;padding:3px 10px;border-radius:8px;font-size:12px;">M-分子</span>
+                分子学检测（10项）
+            </h3>
+            <div class="project-grid" style="margin-bottom:28px;">
+                <div class="project-card">
+                    <div class="pc-header">
+                        <div class="pc-name">血液肿瘤全转录组RNA seq Plus</div>
+                        <span class="pc-micm mol">Mol</span>
+                    </div>
+                    <div class="pc-platform">NGS（全转录组测序）✅</div>
+                    <div class="pc-scene">辅助诊断/靶向用药/复发预后评估+科研</div>
+                    <div class="pc-date">2026-04-01</div>
+                </div>
+                <div class="project-card">
+                    <div class="pc-header">
+                        <div class="pc-name">血液肿瘤180基因检测(含胚系+55种融合基因)</div>
+                        <span class="pc-micm mol">Mol</span>
+                    </div>
+                    <div class="pc-platform">NGS+PCR（180基因+55种融合基因）✅</div>
+                    <div class="pc-scene">基因突变和融合综合检测/诊断/治疗/预后/复发监测</div>
+                    <div class="pc-date">2026-01-01</div>
+                </div>
+                <div class="project-card">
+                    <div class="pc-header">
+                        <div class="pc-name">淋巴瘤基因检测(ctDNA)</div>
+                        <span class="pc-micm mol">Mol</span>
+                    </div>
+                    <div class="pc-platform">NGS（ctDNA液体活检）✅</div>
+                    <div class="pc-scene">淋巴瘤辅助诊断/靶向用药指导/预后评估</div>
+                    <div class="pc-date">2026-01-01</div>
+                </div>
+                <div class="project-card">
+                    <div class="pc-header">
+                        <div class="pc-name">淋巴瘤基因检测(ctDNA)-动态监测</div>
+                        <span class="pc-micm mol">Mol</span>
+                    </div>
+                    <div class="pc-platform">NGS（ctDNA液体活检，动态监测版）✅</div>
+                    <div class="pc-scene">淋巴瘤诊断/用药指导/预后评估+动态监测</div>
+                    <div class="pc-date">2026-01-01</div>
+                </div>
+                <div class="project-card">
+                    <div class="pc-header">
+                        <div class="pc-name">BTK抑制剂耐药基因检测(ctDNA)</div>
+                        <span class="pc-micm mol">Mol</span>
+                    </div>
+                    <div class="pc-platform">NGS（ctDNA，靶向BTK耐药基因）✅</div>
+                    <div class="pc-scene">BTK抑制剂耐药检测/靶向用药指导/疗效评估</div>
+                    <div class="pc-date">2026-01-01</div>
+                </div>
+                <div class="project-card">
+                    <div class="pc-header">
+                        <div class="pc-name">B-ALL基因检测(基础版)</div>
+                        <span class="pc-micm mol">Mol</span>
+                    </div>
+                    <div class="pc-platform">NGS（B-ALL基础版基因Panel）✅</div>
+                    <div class="pc-scene">B急性淋巴细胞白血病辅助诊断/用药指导/预后评估</div>
+                    <div class="pc-date">2026-01-01</div>
+                </div>
+                <div class="project-card">
+                    <div class="pc-header">
+                        <div class="pc-name">T-ALL基因检测(基础版)</div>
+                        <span class="pc-micm mol">Mol</span>
+                    </div>
+                    <div class="pc-platform">NGS（T-ALL基础版基因Panel）✅</div>
+                    <div class="pc-scene">T急性淋巴细胞白血病辅助诊断/用药指导/预后评估</div>
+                    <div class="pc-date">2026-01-01</div>
+                </div>
+                <div class="project-card">
+                    <div class="pc-header">
+                        <div class="pc-name">血液肿瘤521基因检测(ctDNA)</div>
+                        <span class="pc-micm mol">Mol</span>
+                    </div>
+                    <div class="pc-platform">NGS（521基因Panel，ctDNA液体活检）✅</div>
+                    <div class="pc-scene">辅助诊断/靶向用药/复发预后+科研</div>
+                    <div class="pc-date">2025-08-01</div>
+                </div>
+                <div class="project-card">
+                    <div class="pc-header">
+                        <div class="pc-name">血液肿瘤521基因检测(含胚系配对)</div>
+                        <span class="pc-micm mol">Mol</span>
+                    </div>
+                    <div class="pc-platform">NGS（521基因Panel，含胚系对照）✅</div>
+                    <div class="pc-scene">辅助诊断/靶向用药/预后+科研+胚系变异鉴别</div>
+                    <div class="pc-date">2025-08-01</div>
+                </div>
+                <div class="project-card">
+                    <div class="pc-header">
+                        <div class="pc-name">FLT3基因突变检测</div>
+                        <span class="pc-micm mol">Mol</span>
+                    </div>
+                    <div class="pc-platform">NGS（FLT3靶向测序）✅</div>
+                    <div class="pc-scene">FLT3基因突变检测（北京迪安开展）</div>
+                    <div class="pc-date">2025-06-01</div>
+                </div>
+            </div>
+
+            <!-- 免疫分型(I) 5项 -->
+            <h3 style="font-size:16px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+                <span style="background:#eff6ff;color:#2563eb;padding:3px 10px;border-radius:8px;font-size:12px;">I-免疫</span>
+                免疫分型检测（5项）
+            </h3>
+            <div class="project-grid" style="margin-bottom:28px;">
+                <div class="project-card">
+                    <div class="pc-header">
+                        <div class="pc-name">循环浆细胞检测</div>
+                        <span class="pc-micm i">I</span>
+                    </div>
+                    <div class="pc-platform">流式细胞术✅</div>
+                    <div class="pc-scene">浆细胞疾病早期筛查/风险分层/疗效监测/复发预测</div>
+                    <div class="pc-date">2025-06-01</div>
+                </div>
+                <div class="project-card">
+                    <div class="pc-header">
+                        <div class="pc-name">多发性骨髓瘤BCMA检测</div>
+                        <span class="pc-micm i">I</span>
+                    </div>
+                    <div class="pc-platform">流式细胞术✅</div>
+                    <div class="pc-scene">检测浆细胞BCMA表达情况</div>
+                    <div class="pc-date">2025-06-01</div>
+                </div>
+                <div class="project-card">
+                    <div class="pc-header">
+                        <div class="pc-name">免疫功能精准检测</div>
+                        <span class="pc-micm i">I</span>
+                    </div>
+                    <div class="pc-platform">流式细胞术（T/B/NK淋巴细胞亚群）✅</div>
+                    <div class="pc-scene">评估机体免疫功能状态/疾病辅助诊断与监测</div>
+                    <div class="pc-date">2025-06-01</div>
+                </div>
+                <div class="project-card">
+                    <div class="pc-header">
+                        <div class="pc-name">流式自选套餐(5CD)</div>
+                        <span class="pc-micm i">I</span>
+                    </div>
+                    <div class="pc-platform">流式细胞术（5色）✅</div>
+                    <div class="pc-scene">个性化流式检测需求（血液肿瘤免疫表型）</div>
+                    <div class="pc-date">2025-06-01</div>
+                </div>
+                <div class="project-card">
+                    <div class="pc-header">
+                        <div class="pc-name">特定肿瘤快速鉴别(15CD)</div>
+                        <span class="pc-micm i">I</span>
+                    </div>
+                    <div class="pc-platform">流式细胞术（15色）✅</div>
+                    <div class="pc-scene">个性化流式检测需求（血液肿瘤快速鉴别）</div>
+                    <div class="pc-date">2025-06-01</div>
+                </div>
+            </div>
+
+            <div class="insight-box">
+                <h4>&#x1F4A1; 分析洞察</h4>
+                <p>迪安诊断的血液病检测产品线呈现明显的"<strong>NGS为主、流式为辅</strong>"布局特征：</p>
+                <ul>
+                    <li><strong>NGS产品占2/3</strong>（10/15），基因数量从FLT3单基因→180基因→521基因逐级覆盖，满足不同临床需求</li>
+                    <li><strong>ctDNA液体活检</strong>是差异化亮点，已形成淋巴瘤/BTK耐药/动态监测3条细分产品线</li>
+                    <li><strong>流式产品</strong>聚焦浆细胞和免疫功能，但缺少全光谱流式等高阶平台</li>
+                    <li><strong>缺口</strong>：无MRD专项产品、无WES/全外显子、无融合基因专项（仅180基因含融合）、无移植相关检测</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ==================== Q2: MRD对比 ==================== -->
+        <div class="answer-section" id="q1">
+            <div class="answer-header">
+                <h2>&#x1F50D; 各家公司MRD检测产品对比</h2>
+                <div class="a-meta">
+                    <span>数据来源：IMA「检脉通」知识库</span>
+                    <span>&middot;</span>
+                    <span>4家公司 &middot; 6个MRD相关项目</span>
+                </div>
+            </div>
+
+            <div class="answer-summary">
+                <h3>&#x1F4A1; 速览要点</h3>
+                <ul>
+                    <li>仅 <strong>金域医学、迪安诊断、协和博精</strong> 有明确的MRD检测产品，康圣环球暂无</li>
+                    <li>协和博精MRD产品线最完善：覆盖NPM1/FLT3-ITD靶向MRD + 髓系NGS-panel MRD双轨监测</li>
+                    <li>金域医学以 <strong>高灵敏度NGS-MRD</strong> 为核心卖点，但仅限髓系</li>
+                    <li>迪安诊断的MRD能力分散在B-ALL/T-ALL检测和ctDNA动态监测中，非独立MRD产品</li>
+                </ul>
+            </div>
+
+            <div class="company-legend">
+                <div class="legend-item"><span class="legend-dot" style="background:#1a56db;"></span>金域医学</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#0d9488;"></span>康圣环球</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#dc2626;"></span>迪安诊断</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#7c3aed;"></span>协和博精</div>
+            </div>
+
+            <div class="compare-table-wrap">
+                <table class="compare-table">
+                    <thead>
+                        <tr>
+                            <th style="width:120px;">公司</th>
+                            <th style="width:60px;">项目数</th>
+                            <th>MRD产品详情</th>
+                            <th style="width:100px;">检测平台</th>
+                            <th style="width:80px;">灵敏度</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="ct-company">
+                                    <span class="ct-dot" style="background:#7c3aed;"></span>
+                                    协和博精
+                                </div>
+                            </td>
+                            <td><span class="ct-count">2</span></td>
+                            <td>
+                                <div class="ct-detail">
+                                    <strong>① NPM1+FLT3-ITD MRD联合检测</strong>（优化升级版）<br>
+                                    双基因同步监测，覆盖NPM1突变+FLT3-ITD突变AML患者群体；支持初诊MRD全程监测/移植前评估/移植后复发预警/FLT3抑制剂疗效动态监测<br><br>
+                                    <strong>② 髓系NGS-panel MRD检测</strong><br>
+                                    靶向高通量测序MRD监测，覆盖髓系血液肿瘤
+                                </div>
+                            </td>
+                            <td class="ct-detail">NGS<br>qPCR</td>
+                            <td class="ct-detail">NPM1: <strong>10⁻⁵</strong><br>FLT3-ITD: <strong>10⁻⁶</strong></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="ct-company">
+                                    <span class="ct-dot" style="background:#1a56db;"></span>
+                                    金域医学
+                                </div>
+                            </td>
+                            <td><span class="ct-count">1</span></td>
+                            <td>
+                                <div class="ct-detail">
+                                    <strong>高灵敏度髓系血液肿瘤NGS-MRD监测</strong><br>
+                                    兼顾高灵敏度与临床适用性，专注髓系血液肿瘤MRD监测
+                                </div>
+                            </td>
+                            <td class="ct-detail">NGS（高深度靶向测序）</td>
+                            <td class="ct-detail">高灵敏度<br>（具体数值待补全）</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="ct-company">
+                                    <span class="ct-dot" style="background:#dc2626;"></span>
+                                    迪安诊断
+                                </div>
+                            </td>
+                            <td><span class="ct-count">3</span></td>
+                            <td>
+                                <div class="ct-detail">
+                                    <strong>① B-ALL基因检测</strong>（基础版）— 含MRD监测<br>
+                                    B急性淋巴细胞白血病辅助诊断/用药指导/预后评估<br><br>
+                                    <strong>② T-ALL基因检测</strong>（基础版）— 含MRD监测<br>
+                                    T急性淋巴细胞白血病辅助诊断/用药指导/预后评估<br><br>
+                                    <strong>③ ctDNA动态监测</strong> — 非传统MRD<br>
+                                    淋巴瘤ctDNA液体活检动态监测
+                                </div>
+                            </td>
+                            <td class="ct-detail">NGS<br>ctDNA</td>
+                            <td class="ct-detail">待补全</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="ct-company">
+                                    <span class="ct-dot" style="background:#0d9488;"></span>
+                                    康圣环球
+                                </div>
+                            </td>
+                            <td><span class="ct-count" style="background:#f3f4f6;color:var(--text-light);">0</span></td>
+                            <td>
+                                <span class="ct-none">暂无独立MRD检测产品（截至2026年5月）</span>
+                            </td>
+                            <td>—</td>
+                            <td>—</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="insight-box">
+                <h4>&#x1F4A1; 分析洞察</h4>
+                <ul>
+                    <li><strong>协和博精MRD产品线最成熟</strong>：既有基因特异性MRD（NPM1/FLT3-ITD），又有Panel级MRD（髓系NGS-panel），双轨监测策略覆盖面广</li>
+                    <li><strong>金域医学走"高灵敏度"路线</strong>：单一产品但聚焦髓系，与金域MICM综合检测平台定位一致</li>
+                    <li><strong>迪安MRD能力嵌入ALL产品中</strong>：B-ALL/T-ALL Panel包含MRD，ctDNA动态监测为非传统MRD路线，未独立成项</li>
+                    <li><strong>康圣环球MRD空白</strong>：这是重要的差异化机会——606融合基因+115基因Panel为基础，理论上具备MRD产品延展能力</li>
+                    <li><strong>行业趋势</strong>：ELN 2025 AML-MRD共识即将推动MRD检测标准化，MRD产品线完善度将成为重要竞争力</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ==================== Q3: NGS Panel对比 ==================== -->
+        <div class="answer-section" id="q2">
+            <div class="answer-header">
+                <h2>&#x1F52C; 各家公司NGS Panel产品对比</h2>
+                <div class="a-meta">
+                    <span>数据来源：IMA「检脉通」知识库</span>
+                    <span>&middot;</span>
+                    <span>4家公司 &middot; 17个NGS相关项目</span>
+                </div>
+            </div>
+
+            <div class="answer-summary">
+                <h3>&#x1F4A1; 速览要点</h3>
+                <ul>
+                    <li>协和博精NGS Panel最丰富（6个），按疾病亚型精细拆分，基因数从40→399逐级覆盖</li>
+                    <li>迪安诊断以 <strong>521基因大Panel</strong> 为旗舰，辅以180基因和单病种Panel</li>
+                    <li>康圣环球有 <strong>115基因髓系</strong>、<strong>606融合基因(RNA)</strong>、<strong>WES全外显子</strong> 三条差异化路线</li>
+                    <li>金域医学NGS Panel信息较粗，"淋系肿瘤分子检测综合服务"升级后覆盖范围待进一步确认</li>
+                </ul>
+            </div>
+
+            <div class="company-legend">
+                <div class="legend-item"><span class="legend-dot" style="background:#1a56db;"></span>金域医学</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#0d9488;"></span>康圣环球</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#dc2626;"></span>迪安诊断</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#7c3aed;"></span>协和博精</div>
+            </div>
+
+            <!-- 协和博精 -->
+            <h3 style="font-size:16px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+                <span class="ct-dot" style="background:#7c3aed;"></span>
+                协和博精（6个Panel，最丰富）
+            </h3>
+            <div class="compare-table-wrap" style="margin-bottom:24px;">
+                <table class="compare-table">
+                    <thead>
+                        <tr>
+                            <th>产品名称</th>
+                            <th style="width:100px;">基因数量</th>
+                            <th>核心升级内容</th>
+                            <th style="width:100px;">更新日期</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>博益康-全套（升级版）</strong></td>
+                            <td><span class="ct-count">399</span></td>
+                            <td class="ct-detail">原365→399基因；新增PML/RARA/UBTF/IKZF1 plus拷贝数变异/胚系易感基因</td>
+                            <td>2025-03</td>
+                        </tr>
+                        <tr>
+                            <td><strong>博益康-淋巴瘤（升级版）</strong></td>
+                            <td><span class="ct-count">257</span></td>
+                            <td class="ct-detail">原236→257基因；新增BCL2/BCL6/MYC/IGH重排+双打击/三打击检出+HLH基因</td>
+                            <td>2025-03</td>
+                        </tr>
+                        <tr>
+                            <td><strong>博益康-骨髓瘤（升级版）</strong></td>
+                            <td><span class="ct-count">104</span></td>
+                            <td class="ct-detail">原102→104基因；新增BAX/CDKN1B/CKS1B</td>
+                            <td>2025-03</td>
+                        </tr>
+                        <tr>
+                            <td><strong>博益康-ALL（升级版）</strong></td>
+                            <td><span class="ct-count">65</span></td>
+                            <td class="ct-detail">原62→65基因；新增BAX/KMT2A/MYC+IKZF1 plus拷贝数变异</td>
+                            <td>2025-03</td>
+                        </tr>
+                        <tr>
+                            <td><strong>博益康-髓系（升级版）</strong></td>
+                            <td><span class="ct-count">61</span></td>
+                            <td class="ct-detail">原56→61基因；新增BAX/BRAF/KMT2A/MYC/UBTF+UBTF-TDs复杂变异检出</td>
+                            <td>2025-03</td>
+                        </tr>
+                        <tr>
+                            <td><strong>博益康-初筛（升级版）</strong></td>
+                            <td><span class="ct-count">55</span></td>
+                            <td class="ct-detail">原40→55基因；新增15个明确临床意义基因（ATM/BCOR/CDKN2A/DDX41等）</td>
+                            <td>2025-03</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 迪安诊断 -->
+            <h3 style="font-size:16px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+                <span class="ct-dot" style="background:#dc2626;"></span>
+                迪安诊断（4个NGS Panel）
+            </h3>
+            <div class="compare-table-wrap" style="margin-bottom:24px;">
+                <table class="compare-table">
+                    <thead>
+                        <tr>
+                            <th>产品名称</th>
+                            <th style="width:100px;">基因数量</th>
+                            <th>临床场景</th>
+                            <th style="width:100px;">更新日期</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>血液肿瘤521基因检测(ctDNA)</strong></td>
+                            <td><span class="ct-count">521</span></td>
+                            <td class="ct-detail">辅助诊断/靶向用药/复发预后+科研（ctDNA液体活检）</td>
+                            <td>2025-08</td>
+                        </tr>
+                        <tr>
+                            <td><strong>血液肿瘤521基因检测(含胚系配对)</strong></td>
+                            <td><span class="ct-count">521</span></td>
+                            <td class="ct-detail">同上+胚系变异鉴别（含胚系对照）</td>
+                            <td>2025-08</td>
+                        </tr>
+                        <tr>
+                            <td><strong>血液肿瘤180基因检测</strong></td>
+                            <td><span class="ct-count">180</span></td>
+                            <td class="ct-detail">基因突变+55种融合基因综合检测+胚系配对</td>
+                            <td>2026-01</td>
+                        </tr>
+                        <tr>
+                            <td><strong>FLT3基因突变检测</strong></td>
+                            <td><span class="ct-count" style="background:#fef3c7;color:#92400e;">1</span></td>
+                            <td class="ct-detail">FLT3靶向测序（北京迪安开展）</td>
+                            <td>2025-06</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 康圣环球 -->
+            <h3 style="font-size:16px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+                <span class="ct-dot" style="background:#0d9488;"></span>
+                康圣环球（4个NGS Panel，差异化路线）
+            </h3>
+            <div class="compare-table-wrap" style="margin-bottom:24px;">
+                <table class="compare-table">
+                    <thead>
+                        <tr>
+                            <th>产品名称</th>
+                            <th style="width:120px;">检测平台</th>
+                            <th>核心特色</th>
+                            <th style="width:100px;">更新日期</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>血液肿瘤全外显子检测(WES升级版)</strong></td>
+                            <td><span class="ct-count" style="background:#ccfbf1;color:#0d9488;">WES</span></td>
+                            <td class="ct-detail">4大升级：①融合基因重排断点检测 ②非编码区致病变异 ③复杂结构变异算法优化 ④胚系变异解读迭代</td>
+                            <td>2026-05</td>
+                        </tr>
+                        <tr>
+                            <td><strong>髓系血液肿瘤115基因系列检测</strong></td>
+                            <td><span class="ct-count">115</span></td>
+                            <td class="ct-detail">4大临床价值：①辅助分子分型 ②预后分层 ③靶向用药指导 ④肿瘤易感基因筛查</td>
+                            <td>2025-11</td>
+                        </tr>
+                        <tr>
+                            <td><strong>髓系NGS Panel（精准升级版）</strong></td>
+                            <td class="ct-detail">核心库扩容+六大子Panel</td>
+                            <td class="ct-detail">AML/MDS/MPN精准覆盖</td>
+                            <td>2025-06</td>
+                        </tr>
+                        <tr>
+                            <td><strong>606融合基因(RNA)检测</strong></td>
+                            <td><span class="ct-count" style="background:#ccfbf1;color:#0d9488;">606种</span></td>
+                            <td class="ct-detail">靶向RNA-seq覆盖606种融合基因；WHO分子分型+预后评估+靶向治疗+ddPCR精准定量MRD</td>
+                            <td>2025-10</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 金域医学 -->
+            <h3 style="font-size:16px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+                <span class="ct-dot" style="background:#1a56db;"></span>
+                金域医学（3个NGS相关产品）
+            </h3>
+            <div class="compare-table-wrap" style="margin-bottom:24px;">
+                <table class="compare-table">
+                    <thead>
+                        <tr>
+                            <th>产品名称</th>
+                            <th style="width:120px;">检测平台</th>
+                            <th>核心特色</th>
+                            <th style="width:100px;">更新日期</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>淋系肿瘤分子检测综合服务(升级版)</strong></td>
+                            <td class="ct-detail">NGS一站式平台</td>
+                            <td class="ct-detail">覆盖ALL/淋巴瘤/骨髓瘤；基因突变+重排+CNV全覆盖；AI辅助分型诊断（87.2%准确性）；LymphGen分子分型</td>
+                            <td>2026-01</td>
+                        </tr>
+                        <tr>
+                            <td><strong>高灵敏度髓系NGS-MRD监测</strong></td>
+                            <td class="ct-detail">NGS（高深度靶向测序）</td>
+                            <td class="ct-detail">髓系MRD专项监测，兼顾高灵敏度与临床适用性</td>
+                            <td>2026-05</td>
+                        </tr>
+                        <tr>
+                            <td><strong>三代测序造血干细胞移植供者选择</strong></td>
+                            <td class="ct-detail">三代测序（单分子实时测序）</td>
+                            <td class="ct-detail">HLA高分辨配型/供者精准选择（非传统NGS Panel）</td>
+                            <td>2026-05</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="insight-box">
+                <h4>&#x1F4A1; 分析洞察</h4>
+                <ul>
+                    <li><strong>协和博精Panel最"精"</strong>：6个Panel按疾病亚型精细拆分（全套399→淋巴瘤257→骨髓瘤104→ALL 65→髓系61→初筛55），临床选择灵活</li>
+                    <li><strong>迪安Panel最"大"</strong>：521基因大Panel为当前市场最大基因数量，覆盖面广但精准度可能不如按亚型拆分的方案</li>
+                    <li><strong>康圣路线最"特"</strong>：WES全外显子+606融合基因(RNA)形成差异化——不做Panel数量竞争，而是在WES广度和RNA融合深度上做文章</li>
+                    <li><strong>金域信息最"少"</strong>：淋系综合服务升级后具体基因数量未公开，需要进一步获取产品信息补充</li>
+                    <li><strong>趋势判断</strong>：行业正从"大Panel"向"精准分型+MRD+AI辅助"方向演进，单纯比拼基因数已不足以建立壁垒</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="page-footer">
+            检不断 理不乱 v2.2 &middot; 金域医学营销决策辅助工具 &middot; 数据来源：IMA「检脉通——血液病竞品分析」知识库
+        </div>
+    </div>
+
+    <script>
+    // ===== Knowledge Base Data (与首页同步) =====
+    const libraryData = [
+        {company:'金域医学',name:'高灵敏度髓系NGS-MRD监测',platform:'NGS',scene:'髓系MRD监测',date:'2026-05-12',micm:'M-分子',url:'section1.html'},
+        {company:'康圣环球',name:'血液肿瘤WES升级版',platform:'NGS(WES)',scene:'全基因组变异检测',date:'2026-05-31',micm:'M-分子',url:'section1.html'},
+        {company:'金域医学',name:'三代测序造血干细胞移植供者选择',platform:'三代测序',scene:'移植供者选择',date:'2026-05-29',micm:'Tx-移植',url:'section1.html'},
+        {company:'金域医学',name:'淋系肿瘤分子检测服务(升级版)',platform:'NGS',scene:'淋系肿瘤一站式分子检测',date:'2026-01-29',micm:'M-分子',url:'section1.html'},
+        {company:'康圣环球',name:'髓系115基因系列检测',platform:'NGS',scene:'髓系肿瘤基因突变',date:'2025-11-27',micm:'M-分子',url:'section1.html'},
+        {company:'康圣环球',name:'606融合基因(RNA)检测',platform:'NGS(RNA-seq)',scene:'融合基因筛查/分子分型',date:'2025-10-14',micm:'M-分子',url:'section1.html'},
+        {company:'康圣环球',name:'全光谱流式细胞术',platform:'全光谱流式',scene:'免疫分型高阶应用',date:'2025-06-01',micm:'I-免疫',url:'section1.html'},
+        {company:'康圣环球',name:'髓系NGS Panel升级',platform:'NGS',scene:'髓系肿瘤基因检测',date:'2024-12-01',micm:'M-分子',url:'section1.html'},
+        {company:'迪安诊断',name:'521基因ctDNA全景检测',platform:'NGS',scene:'血液肿瘤ctDNA',date:'2026-04-01',micm:'M-分子',url:'section1.html'},
+        {company:'迪安诊断',name:'521基因胚系突变检测',platform:'NGS',scene:'遗传性肿瘤易感基因',date:'2026-04-01',micm:'M-分子',url:'section1.html'},
+        {company:'迪安诊断',name:'BTK耐药突变检测',platform:'NGS',scene:'BTK抑制剂耐药',date:'2026-01-01',micm:'M-分子',url:'section1.html'},
+        {company:'迪安诊断',name:'B-ALL MRD检测',platform:'NGS',scene:'B-ALL微小残留病',date:'2026-01-01',micm:'M-分子',url:'section1.html'},
+        {company:'迪安诊断',name:'T-ALL MRD检测',platform:'NGS',scene:'T-ALL微小残留病',date:'2026-01-01',micm:'M-分子',url:'section1.html'},
+        {company:'迪安诊断',name:'ctDNA动态监测',platform:'NGS',scene:'血液肿瘤疗效监测',date:'2025-12-01',micm:'M-分子',url:'section1.html'},
+        {company:'迪安诊断',name:'RNA-seq Plus',platform:'RNA-seq',scene:'融合基因筛查',date:'2025-08-01',micm:'M-分子',url:'section1.html'},
+        {company:'迪安诊断',name:'180基因Panel',platform:'NGS',scene:'血液肿瘤基因突变',date:'2025-06-01',micm:'M-分子',url:'section1.html'},
+        {company:'迪安诊断',name:'ctDNA NGS淋巴瘤检测',platform:'NGS',scene:'淋巴瘤ctDNA',date:'2025-06-01',micm:'M-分子',url:'section1.html'},
+        {company:'迪安诊断',name:'循环浆细胞检测',platform:'流式',scene:'多发性骨髓瘤',date:'2025-06-01',micm:'I-免疫',url:'section1.html'},
+        {company:'迪安诊断',name:'BCMA检测',platform:'流式',scene:'多发性骨髓瘤靶点',date:'2025-06-01',micm:'I-免疫',url:'section1.html'},
+        {company:'迪安诊断',name:'免疫功能评分',platform:'流式+AI',scene:'免疫功能评估',date:'2025-06-01',micm:'I-免疫',url:'section1.html'},
+        {company:'迪安诊断',name:'流式自选5CD',platform:'流式',scene:'定制免疫分型',date:'2025-06-01',micm:'I-免疫',url:'section1.html'},
+        {company:'迪安诊断',name:'快速鉴别15CD',platform:'流式',scene:'急性白血病免疫分型',date:'2025-06-01',micm:'I-免疫',url:'section1.html'},
+        {company:'迪安诊断',name:'FLT3-ITD检测',platform:'PCR',scene:'AML预后分层',date:'2025-06-01',micm:'M-分子',url:'section1.html'},
+        {company:'协和博精',name:'NPM1+FLT3-ITD MRD',platform:'qPCR',scene:'AML-MRD监测',date:'2025-12-19',micm:'M-分子',url:'section1.html'},
+        {company:'协和博精',name:'髓系NGS-panel MRD',platform:'NGS',scene:'AML-MRD监测',date:'2025-03-01',micm:'M-分子',url:'section1.html'},
+        {company:'协和博精',name:'博益康全套(399基因)',platform:'NGS',scene:'血液肿瘤综合检测',date:'2025-03-01',micm:'M-分子',url:'section1.html'},
+        {company:'协和博精',name:'博益康淋巴瘤(257基因)',platform:'NGS',scene:'淋巴瘤基因突变',date:'2025-03-01',micm:'M-分子',url:'section1.html'},
+        {company:'协和博精',name:'博益康髓系(61基因)',platform:'NGS',scene:'髓系肿瘤基因突变',date:'2025-03-01',micm:'M-分子',url:'section1.html'},
+        {company:'协和博精',name:'博益康ALL(65基因)',platform:'NGS',scene:'ALL基因突变',date:'2025-03-01',micm:'M-分子',url:'section1.html'},
+        {company:'协和博精',name:'博益康初筛(55基因)',platform:'NGS',scene:'血液病初筛',date:'2025-03-01',micm:'M-分子',url:'section1.html'},
+        {company:'协和博精',name:'博益康骨髓瘤(104基因)',platform:'NGS',scene:'多发性骨髓瘤',date:'2025-03-01',micm:'M-分子',url:'section1.html'},
+    ];
+
+    // ===== Synonym Expansion Table (第二层) =====
+    const synonymMap = {
+        '测序': 'NGS', '二代测序': 'NGS', '高通量测序': 'NGS', 'next-seq': 'NGS',
+        '残留': 'MRD', '微小残留': 'MRD', '微小残留病': 'MRD',
+        '流式细胞': '流式', '流式细胞术': '流式', '免疫分型': '流式',
+        '海思特': '康圣环球', '康圣': '康圣环球', '北京海思特': '康圣环球',
+        '迪安': '迪安诊断', '迪安诊断服务': '迪安诊断',
+        '协和': '协和博精', '博精': '协和博精', '博益康': '协和博精',
+        '金域': '金域医学', '金域检验': '金域医学',
+        '贝肯': '荻硕贝肯', 'TB医学': '荻硕贝肯',
+        '融合': '融合基因', 'rna': 'RNA-seq', 'ct-dna': 'ctDNA',
+        '全外': 'WES', '全外显子': 'WES',
+        '移植': '移植', '配型': 'HLA', 'hla': 'HLA',
+        'aml': 'AML', 'all': 'ALL', '淋巴瘤': '淋巴瘤',
+        '骨髓瘤': '骨髓瘤', '白血病': '白血病',
+    };
+
+    // Expand query with synonyms
+    function expandQuery(query) {
+        let expanded = query;
+        for (const [synonym, standard] of Object.entries(synonymMap)) {
+            if (query.toLowerCase().includes(synonym.toLowerCase())) {
+                // Add the standard term alongside (don't replace, just append for matching)
+                if (!query.toLowerCase().includes(standard.toLowerCase())) {
+                    expanded += ' ' + standard;
+                }
+            }
+        }
+        return expanded;
+    }
+
+    // ===== Company Name Extraction (第二层) =====
+    const companyAliases = {
+        '金域医学': ['金域医学', '金域', '金域检验'],
+        '康圣环球': ['康圣环球', '康圣', '海思特', '北京海思特', '康圣环球特检'],
+        '迪安诊断': ['迪安诊断', '迪安', '迪安诊断服务', '迪安诊断血液疾病中心'],
+        '协和博精': ['协和博精', '协和', '博精', '博益康'],
+        '荻硕贝肯': ['荻硕贝肯', '贝肯', 'TB医学'],
+    };
+
+    function extractCompany(query) {
+        const results = [];
+        for (const [company, aliases] of Object.entries(companyAliases)) {
+            for (const alias of aliases) {
+                if (query.includes(alias)) {
+                    results.push(company);
+                    break;
+                }
+            }
+        }
+        return results; // may return multiple companies
+    }
+
+    // ===== Pre-defined Q&A keyword mapping =====
+    const qaMap = [
+        {
+            index: 0, // Q1 tab
+            match: (q) => /迪安/.test(q) && !/MRD|NGS\s*Panel|panel/i.test(q)
+        },
+        {
+            index: 1, // Q2 tab
+            match: (q) => /MRD|微小残留|残留病/.test(q)
+        },
+        {
+            index: 2, // Q3 tab
+            match: (q) => /NGS\s*Panel|基因\s*[Pp]anel|Panel/i.test(q)
+        }
+    ];
+
+    // ===== Tab Switching (clicking Q tab clears search results) =====
+    function switchQ(index) {
+        // Clear all search-related content
+        clearSearchResults();
+
+        // Update tabs
+        document.querySelectorAll('.q-tab').forEach((tab, i) => {
+            tab.classList.toggle('active', i === index);
+        });
+        // Update sections
+        document.querySelectorAll('.answer-section').forEach((sec, i) => {
+            sec.classList.toggle('active', i === index);
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Clear search results (when switching to Q tabs)
+    function clearSearchResults() {
+        document.getElementById('userQuestion').style.display = 'none';
+        document.getElementById('searchResults').style.display = 'none';
+        document.getElementById('noMatchHint').style.display = 'none';
+        document.getElementById('templateAnswer').style.display = 'none';
+        document.getElementById('templateAnswer').innerHTML = '';
+    }
+
+    // Deactivate all Q tabs
+    function deactivateAllTabs() {
+        document.querySelectorAll('.q-tab').forEach((tab) => {
+            tab.classList.remove('active');
+        });
+        document.querySelectorAll('.answer-section').forEach((sec) => {
+            sec.classList.remove('active');
+        });
+    }
+
+    // ===== Search Knowledge Base (with synonym expansion) =====
+    function searchKB(query) {
+        const expandedQuery = expandQuery(query);
+        const keywords = expandedQuery.toLowerCase().split(/\s+/).filter(k => k.length > 0);
+        if (keywords.length === 0) return [];
+
+        // Deduplicate keywords
+        const uniqueKw = [...new Set(keywords)];
+
+        return libraryData.filter(item => {
+            const text = (item.company + item.name + item.platform + item.scene + item.micm).toLowerCase();
+            return uniqueKw.every(kw => text.includes(kw));
+        });
+    }
+
+    // ===== Render Company Project Template (第二层：模板填充) =====
+    function renderCompanyTemplate(companies, query) {
+        const resultsDiv = document.getElementById('searchResults');
+        const noMatchDiv = document.getElementById('noMatchHint');
+        const templateDiv = document.getElementById('templateAnswer');
+
+        noMatchDiv.style.display = 'none';
+        resultsDiv.style.display = 'none';
+        templateDiv.style.display = 'block';
+
+        let html = '';
+        companies.forEach(company => {
+            const projects = libraryData.filter(item => item.company === company);
+            if (projects.length === 0) {
+                html += `
+                    <div style="margin-bottom:20px;">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                            <span style="font-size:18px;">&#x1F3E2;</span>
+                            <h3 style="font-size:16px;font-weight:600;color:var(--text);">${company}</h3>
+                            <span style="font-size:12px;color:var(--text-light);background:var(--border);padding:2px 8px;border-radius:10px;">暂无项目数据</span>
+                        </div>
+                        <p style="font-size:13px;color:var(--text-secondary);padding-left:26px;">
+                            知识库中暂未收录${company}的血液病检测项目数据。如有相关信息，欢迎补充！
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            // MICM grouping
+            const micmGroups = {};
+            projects.forEach(p => {
+                const group = p.micm || '其他';
+                if (!micmGroups[group]) micmGroups[group] = [];
+                micmGroups[group].push(p);
+            });
+
+            html += `
+                <div style="margin-bottom:20px;">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                        <span style="font-size:18px;">&#x1F3E2;</span>
+                        <h3 style="font-size:16px;font-weight:600;color:var(--text);">${company}</h3>
+                        <span style="font-size:12px;color:var(--primary);background:var(--primary-light);padding:2px 8px;border-radius:10px;font-weight:600;">${projects.length} 个项目</span>
+                    </div>
+            `;
+
+            for (const [micm, items] of Object.entries(micmGroups)) {
+                const micmColors = {
+                    'M-分子': {bg:'#f0fdf4',border:'#bbf7d0',color:'#16a34a'},
+                    'I-免疫': {bg:'#eff6ff',border:'#bfdbfe',color:'#2563eb'},
+                    'Tx-移植': {bg:'#faf5ff',border:'#e9d5ff',color:'#9333ea'},
+                    'C-遗传': {bg:'#fefce8',border:'#fde68a',color:'#ca8a04'},
+                };
+                const mc = micmColors[micm] || {bg:'#f8fafc',border:'#e2e8f0',color:'#64748b'};
+
+                html += `
+                    <div style="margin-bottom:8px;padding-left:26px;">
+                        <div style="font-size:12px;font-weight:600;color:${mc.color};margin-bottom:6px;display:inline-block;background:${mc.bg};padding:2px 8px;border-radius:4px;border:1px solid ${mc.border};">${micm}（${items.length}项）</div>
+                        <div style="display:grid;gap:6px;">
+                `;
+
+                items.forEach(item => {
+                    html += `
+                        <a href="${item.url}" style="display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;background:var(--card);border-radius:8px;padding:10px 14px;border:1px solid var(--border);transition:all 0.2s;" onmouseover="this.style.borderColor='var(--primary)';this.style.boxShadow='0 2px 8px rgba(249,115,22,0.1)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+                            <div style="flex:1;min-width:0;">
+                                <div style="font-size:13px;font-weight:600;">${item.name}</div>
+                                <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">${item.platform} · ${item.scene}</div>
+                            </div>
+                            <div style="font-size:11px;color:var(--text-light);white-space:nowrap;">${item.date}</div>
+                        </a>
+                    `;
+                });
+
+                html += `</div></div>`;
+            }
+            html += `</div>`;
+        });
+
+        templateDiv.innerHTML = html;
+    }
+
+    // ===== Render Search Results =====
+    function renderResults(results, query) {
+        const container = document.getElementById('resultList');
+        const countEl = document.getElementById('resultCount');
+        const resultsDiv = document.getElementById('searchResults');
+        const noMatchDiv = document.getElementById('noMatchHint');
+        const templateDiv = document.getElementById('templateAnswer');
+
+        templateDiv.style.display = 'none';
+
+        if (results.length === 0) {
+            resultsDiv.style.display = 'none';
+            noMatchDiv.style.display = 'block';
+            return;
+        }
+
+        noMatchDiv.style.display = 'none';
+        resultsDiv.style.display = 'block';
+        countEl.textContent = `共 ${results.length} 项`;
+
+        container.innerHTML = results.map(item => `
+            <a href="${item.url}" style="display:block;text-decoration:none;color:inherit;background:var(--card);border-radius:10px;padding:14px 18px;margin-bottom:8px;box-shadow:0 2px 8px rgba(0,0,0,0.04);border-left:3px solid var(--primary);transition:all 0.2s;" onmouseover="this.style.boxShadow='var(--shadow-hover)';this.style.transform='translateX(4px)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.04)';this.style.transform='none'">
+                <div style="font-size:11px;color:var(--primary-dark);font-weight:600;margin-bottom:3px;">${item.company} &middot; ${item.micm}</div>
+                <div style="font-size:14px;font-weight:600;margin-bottom:3px;">${item.name}</div>
+                <div style="font-size:12px;color:var(--text-secondary);">${item.platform} | ${item.scene} | ${item.date}</div>
+            </a>
+        `).join('');
+    }
+
+    // ===== Process Question (with thinking delay) =====
+    function processQuestion(query) {
+        if (!query) return;
+
+        // Show user question
+        document.getElementById('userQuestionText').textContent = query;
+        document.getElementById('userQuestion').style.display = 'block';
+
+        // Show thinking animation
+        showThinking();
+
+        // Simulate thinking delay (1.2s)
+        setTimeout(() => {
+            hideThinking();
+            doProcessQuestion(query);
+        }, 1200);
+    }
+
+    function doProcessQuestion(query) {
+        // Save to search history
+        saveHistory(query);
+
+        // Step 1: Extract company names
+        const companies = extractCompany(query);
+
+        // Step 2: Try pre-defined Q&A tabs
+        let matchedTab = -1;
+        for (const qa of qaMap) {
+            if (qa.match(query)) {
+                matchedTab = qa.index;
+                break;
+            }
+        }
+
+        // Step 3: If company detected + no pre-rendered tab match → use template
+        if (companies.length > 0 && matchedTab < 0) {
+            deactivateAllTabs();
+            renderCompanyTemplate(companies, query);
+            return;
+        }
+
+        // Step 4: Pre-rendered tab match → show question box + hint to click tab
+        if (matchedTab >= 0) {
+            deactivateAllTabs();
+            // Show hint: click the matching Q tab to see answer
+            const hintDiv = document.getElementById('templateAnswer');
+            hintDiv.style.display = 'block';
+            hintDiv.innerHTML = `
+                <div style="background:var(--card);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow-card);text-align:center;">
+                    <div style="font-size:24px;margin-bottom:8px;">&#x1F4A1;</div>
+                    <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px;">已找到相关问题</div>
+                    <div style="font-size:13px;color:var(--text-secondary);">点击上方 <strong style="color:var(--primary);">Q${matchedTab+1}</strong> 标签查看详细回答</div>
+                </div>
+            `;
+            return;
+        }
+
+        // Step 5: No company, no pre-rendered → keyword search with synonym expansion
+        deactivateAllTabs();
+        const results = searchKB(query);
+        if (results.length > 0) {
+            renderResults(results, query);
+        } else {
+            renderResults([], query);
+        }
+    }
+
+    // ===== Thinking Animation =====
+    function showThinking() {
+        let overlay = document.getElementById('thinkingOverlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'thinkingOverlay';
+            overlay.style.cssText = 'position:fixed;top:0;left:220px;right:0;bottom:0;background:rgba(255,255,255,0.85);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;backdrop-filter:blur(2px);';
+            overlay.innerHTML = `
+                <div style="text-align:center;">
+                    <div class="thinking-dots" style="display:flex;gap:6px;justify-content:center;margin-bottom:16px;">
+                        <span style="width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,#f97316,#f472b6);animation:thinkBounce 1.4s infinite both;animation-delay:0s;"></span>
+                        <span style="width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,#f97316,#f472b6);animation:thinkBounce 1.4s infinite both;animation-delay:0.16s;"></span>
+                        <span style="width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,#f97316,#f472b6);animation:thinkBounce 1.4s infinite both;animation-delay:0.32s;"></span>
+                    </div>
+                    <div style="font-size:15px;font-weight:600;color:var(--text);">检答星球正在思考</div>
+                    <div style="font-size:12px;color:var(--text-light);margin-top:4px;">检索知识库中...</div>
+                </div>
+            `;
+            document.querySelector('.main').appendChild(overlay);
+
+            // Add animation keyframes if not exists
+            if (!document.getElementById('thinkingKeyframes')) {
+                const style = document.createElement('style');
+                style.id = 'thinkingKeyframes';
+                style.textContent = `
+                    @keyframes thinkBounce {
+                        0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+                        40% { transform: scale(1); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+        overlay.style.display = 'flex';
+    }
+
+    function hideThinking() {
+        const overlay = document.getElementById('thinkingOverlay');
+        if (overlay) overlay.style.display = 'none';
+    }
+
+    // ===== Ask from this page =====
+    function askFromPage() {
+        const input = document.getElementById('askInput');
+        const query = input.value.trim();
+        if (!query) return;
+        const newUrl = window.location.pathname + '?q=' + encodeURIComponent(query);
+        window.history.pushState({query}, '', newUrl);
+        processQuestion(query);
+        input.value = '';
+        hideHistory();
+    }
+
+    // ===== Search History (3条，localStorage) =====
+    const HISTORY_KEY = 'jdaHistory';
+    const MAX_HISTORY = 3;
+
+    function getHistory() {
+        try {
+            return JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+        } catch(e) { return []; }
+    }
+
+    function saveHistory(query) {
+        let history = getHistory();
+        // Remove duplicate
+        history = history.filter(h => h !== query);
+        // Add to front
+        history.unshift(query);
+        // Keep only MAX_HISTORY
+        history = history.slice(0, MAX_HISTORY);
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    }
+
+    function showHistory() {
+        const history = getHistory();
+        if (history.length === 0) return;
+        const dropdown = document.getElementById('historyDropdown');
+        dropdown.innerHTML = `
+            <div style="padding:8px 12px;font-size:11px;color:var(--text-light);border-bottom:1px solid var(--border);">
+                &#x1F552; 最近搜索
+            </div>
+            ${history.map(h => `
+                <div onclick="clickHistory('${h.replace(/'/g, "\\'")}')" style="padding:10px 16px;font-size:13px;color:var(--text);cursor:pointer;transition:background 0.15s;border-bottom:1px solid var(--border);" onmouseover="this.style.background='var(--primary-light)'" onmouseout="this.style.background='transparent'">
+                    ${h}
+                </div>
+            `).join('')}
+        `;
+        dropdown.style.display = 'block';
+    }
+
+    function hideHistory() {
+        document.getElementById('historyDropdown').style.display = 'none';
+    }
+
+    function clickHistory(query) {
+        document.getElementById('askInput').value = query;
+        hideHistory();
+        askFromPage();
+    }
+
+    // ===== Init: Read URL params =====
+    function init() {
+        const params = new URLSearchParams(window.location.search);
+        const hash = window.location.hash;
+
+        // Priority 1: URL ?q= parameter (from homepage search)
+        const q = params.get('q');
+        if (q) {
+            // Don't auto-select any tab, just process the question
+            deactivateAllTabs();
+            processQuestion(q);
+            return;
+        }
+
+        // Priority 2: URL hash (from quick-ask buttons) → select tab
+        if (hash === '#q1') switchQ(0);
+        else if (hash === '#q2') switchQ(1);
+        else if (hash === '#q3') switchQ(2);
+        // Default: no tab selected
+    }
+
+    // Enter key in ask input
+    document.getElementById('askInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            askFromPage();
+        }
+    });
+
+    window.addEventListener('hashchange', function() {
+        const hash = window.location.hash;
+        if (hash === '#q1') switchQ(0);
+        else if (hash === '#q2') switchQ(1);
+        else if (hash === '#q3') switchQ(2);
+    });
+
+    init();
+    </script>
+
+</body>
+</html>
